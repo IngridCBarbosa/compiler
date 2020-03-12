@@ -1,20 +1,15 @@
 package compilador;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+
+import FileInput.ReadeFile;
 
 public class Main {
 
-	public static void main(String[] args) throws IOException {
-		FileReader codigo = new FileReader("codigo.txt");
-		BufferedReader file = new BufferedReader(codigo);
+	public static void main(String[] args) throws IOException  {
 		
-		while(file.ready()) {
-			String linha = file.readLine();
-			System.out.println(linha);
-		}
-		
+		ReadeFile arquivo = new ReadeFile();
+		arquivo.leituraCaracterArquivo();
 	}
 
 }
