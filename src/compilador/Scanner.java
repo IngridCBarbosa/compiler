@@ -1,8 +1,8 @@
 package compilador;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Scanner {
 	
@@ -11,10 +11,10 @@ public class Scanner {
 	private ReadeFile read = new ReadeFile();
 	private static char caracter = ' ';
 	
-	private List<String> buffer = new ArrayList<String>();
+	private Queue<Token> filaToken = new LinkedList<Token>();
 
-	private int linha = 0;
-	private int coluna = 0;
+	private int linha = 1;
+	private int coluna = 1;
 	
 	public void scannerToken() throws IOException {
 		
@@ -23,22 +23,25 @@ public class Scanner {
 		while(loop) {
 			
 			if(Character.isDigit(caracter)) {
-				//buffer.add(String.valueOf(caracter)); // buffer ???
+				
 				caracter = read.leituraCaracterArquivo();
 				
 				if(caracter == '.') {
 					caracter = read.leituraCaracterArquivo();
 					if(caracter == ';') {
-						mensagemErroFloat();
+						mensagemErroFloat(linha ,coluna);
+						break;
 					}
 					if(Character.isDigit(caracter)) {
 						caracter = read.leituraCaracterArquivo();
 						if(caracter == ';') {
-							
+							// float correto 
 						}
 					}
 				}
-				
+				if(caracter == ';') {
+					// int correto
+				}
 				
 			}
 			
@@ -46,6 +49,15 @@ public class Scanner {
 				caracter = read.leituraCaracterArquivo();
 				if(Character.isDigit(caracter)) {
 					caracter = read.leituraCaracterArquivo();
+					if(caracter == ';') {
+						// float correto
+						filaToken.add(Token.TIPO_FLOAT);
+					}
+				}
+				
+				if(caracter == ';') {
+					mensagemErroFloat(linha,coluna);
+					break;
 				}
 				
 					
@@ -65,7 +77,7 @@ public class Scanner {
 				else {
 					coluna++;
 				}
-				
+				caracter = read.leituraCaracterArquivo();
 			}
 			
 			
@@ -73,12 +85,12 @@ public class Scanner {
 	}
 	
 	
-	private void mensagemErroInt() {
-		System.err.println("int mal formado");
+	private void mensagemErroInt( int linha, int coluna) {
+		System.err.println("ERRO linha "+linha+", coluna"+coluna);
 	}
 	
-	private void mensagemErroFloat() {
-		System.err.println("fload mal formado");
+	private void mensagemErroFloat(int linha, int coluna) {
+		System.err.println("ERRO linha "+linha+", coluna "+coluna+"");
 	}
 	
 }
