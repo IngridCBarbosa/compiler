@@ -1,0 +1,16 @@
+package compilador;
+
+public class Token {
+	
+	enum Dicionario {
+		PALAVRA_RESERVADA,
+		IDENTIFICADOR,
+		TIPO_INTEIRO,
+		TIPO_FLOAT,
+		OPERADOR_ATRIBUICAO,
+		OPERADOR_SOMA,
+		OPERADOR_MULTIPLOCACAO,
+		PONTO_E_VIRGULA,
+		
+	}
+}
