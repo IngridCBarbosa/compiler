@@ -7,7 +7,12 @@ public class Main {
 	public static void main(String[] args) throws IOException  {
 		
 		Scanner scanner = new Scanner();
-		scanner.scannerToken();
+		
+		Lexema l = scanner.scannerToken(); 
+		
+		while(l.getToken() != Token.FIM_DE_ARQUIVO_TOKEN) {
+			l = scanner.scannerToken();
+		}
 	}
 
 }
