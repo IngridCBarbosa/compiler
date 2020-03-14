@@ -25,7 +25,12 @@ public class ReadeFile {
 		int c;
 	
 		c = entradaFormatada.read();
+		
+		if(c == -1) {
+			return '|';
+		}
 		//System.out.println((char) c);
 		return (char) c;
 	}
+	
 }
