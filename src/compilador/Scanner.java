@@ -1,8 +1,6 @@
 package compilador;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class Scanner {
 	
@@ -38,24 +36,58 @@ public class Scanner {
 						return lexema;
 					}
 					if(Character.isDigit(caracter)) {
+						forma_token = forma_token + caracter;
 						caracter = read.leituraCaracterArquivo();
 						if(caracter == ';') {
 							// float correto
+							lexema = new Lexema(forma_token,Token.TIPO_FLOAT_TOKEN);
+							return lexema;
 						}
 						if(caracter == ' ') {
 							coluna++;
 							// float correto 
+							lexema = new Lexema(forma_token, Token.TIPO_FLOAT_TOKEN);
+							return lexema;
 						}
+					}
+					
+					if(caracter == ' ') {
+						lexema = new Lexema(forma_token,Token.TIPO_FLOAT_TOKEN);
+						coluna++;
+						mensagemErroFloat(linha, coluna, lexema);
+						return lexema;
+					}
+					if(caracter == '\n') {
+						lexema = new Lexema(forma_token,Token.TIPO_FLOAT_TOKEN);
+						mensagemErroFloat(linha, coluna, lexema);
+						return lexema;
+					}
+					// FIM DE ARQUIVO
+					if(caracter == '|') {
+						lexema = new Lexema(forma_token, Token.TIPO_FLOAT_TOKEN);
+						mensagemErroFloat(linha, coluna, lexema);
+						return lexema;
 					}
 				}
 				if(caracter == ';') {
 					// int correto
+					lexema = new Lexema(forma_token,Token.TIPO_INT_TOKEN);
+					return lexema;
 				}else if(caracter == ' ') {
 					coluna++;
 					// int correto
+					lexema = new Lexema(forma_token,Token.TIPO_INT_TOKEN);
+					return lexema;
+				}
+				if(Character.isLetter(caracter)) {
+					forma_token = forma_token + caracter;
+					lexema = new Lexema(forma_token, Token.TIPO_INT_TOKEN);
+					mensagemErroInt(linha, coluna, lexema);
+					return lexema;
 				}
 				
 			}
+			
 			// TIPO FLOAT
 			if(caracter == '.') {
 				caracter = read.leituraCaracterArquivo();
@@ -91,21 +123,24 @@ public class Scanner {
 				}
 				caracter = read.leituraCaracterArquivo();
 			}
+			// FIM DE ARQUIVO
 			if(caracter == '|') {
 				 lexema = new Lexema ("-1",Token.FIM_DE_ARQUIVO_TOKEN);
-				 break;
+				 return lexema;
 			}
 			
 			
 		}
-		return lexema;
+		return null;
 	
 	}
 	
 	
-	private void mensagemErroInt( int linha, int coluna) {
-		System.err.println("ERRO linha "+linha+", coluna"+coluna);
+	private void mensagemErroInt( int linha, int coluna,Lexema lexema) {
+		System.err.println("ERRO linha "+linha+", coluna "+coluna+" token: "+lexema.getToken()+" int mal formado");
 	}
+	
+	
 	
 	private void mensagemErroFloat(int linha, int coluna,Lexema lexema) {
 		System.err.println("ERRO linha "+linha+", coluna "+coluna+" token: "+lexema.getToken()+" float mal formado");
