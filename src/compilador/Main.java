@@ -11,6 +11,7 @@ public class Main {
 		Lexema l = scanner.scannerToken(); 
 		
 		while(l.getToken() != Token.FIM_DE_ARQUIVO_TOKEN) {
+			
 			l = scanner.scannerToken();
 		}
 	}
