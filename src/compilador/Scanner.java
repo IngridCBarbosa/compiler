@@ -1,8 +1,6 @@
 package compilador;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Scanner {
 	
@@ -31,7 +29,6 @@ public class Scanner {
 				// TIPO FLOAT
 				if(caracter == '.') {
 					caracter = read.leituraCaracterArquivo();
-					forma_token = forma_token + caracter;
 					if(caracter == ';') {
 						lexema = new Lexema(forma_token,Token.TIPO_FLOAT_TOKEN);
 						mensagemErroFloat(linha ,coluna,lexema);
@@ -54,6 +51,11 @@ public class Scanner {
 							//return lexema;
 							break;
 						}
+					}
+					if(Character.isLetter(caracter)) {
+						lexema = new Lexema(forma_token, Token.TIPO_FLOAT_TOKEN);
+						mensagemErroFloat(linha, coluna, lexema);
+						break;
 					}
 					
 					if(caracter == ' ') {
@@ -132,7 +134,7 @@ public class Scanner {
 			
 			
 			if(Character.isWhitespace(caracter)) {
-				//caracter = new Character(read.leituraCaracterArquivo());
+				
 				
 				if(caracter == '\t') { // TAB
 					coluna = coluna + 4; 
@@ -202,6 +204,24 @@ public class Scanner {
 					 }
 				 }
 			 }
+			 
+			 // CERACTER ESPECIAS
+			 if(caracter == '(') {
+				 lexema = new Lexema(forma_token, Token.ABRE_PARENTESE_TOKEN);
+				 break;
+			 }
+			 if(caracter == ')') {
+				 lexema = new Lexema(forma_token, Token.FECHA_PARENTESE_TOKEN);
+				 break;
+			 }
+			 if(caracter == ',') {
+				 lexema = new Lexema(forma_token, Token.VIRGULA_TOKEN);
+				 break;
+			 }
+			 if(caracter == ';') {
+				 lexema = new Lexema(forma_token, Token.PONTO_E_VIRGULA_TOKEN);
+				 break;
+			 }
 			
 			
 		}// FIM DO LOOP
@@ -226,34 +246,7 @@ public class Scanner {
 		System.err.println("ERRO linha "+linha+", coluna "+coluna+" token: "+lexema.getToken()+" char mal formado");
 	}
 	
-	
-	// MELHORARA ISSO
-	private int ePalavraReservada(String palavra) {
-		
-		switch(palavra) {
-		case "main":
-			return 1;
-		case "if":
-			return 2;
-			
-		case "else":
-			return 3;
-		case "while":
-			return 4;
-		case "do":
-			return 5;
-		case "for":
-			return 6;
-		case "int":
-			return 7;
-		case "float":
-			return 8;
-		case "char":
-			return 9;
-		}
-		return 0;
-		
-	}
+
 	
 	
 }
