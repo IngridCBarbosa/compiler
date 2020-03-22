@@ -57,17 +57,8 @@ public class Scanner {
 						mensagemErroFloat(linha, coluna, lexema);
 						return lexema;
 					}
-					if(caracter == '\n') {
-						lexema = new Lexema(forma_token,Token.TIPO_FLOAT_TOKEN);
-						mensagemErroFloat(linha, coluna, lexema);
-						return lexema;
-					}
-					// FIM DE ARQUIVO
-					if(caracter == '|') {
-						lexema = new Lexema(forma_token, Token.TIPO_FLOAT_TOKEN);
-						mensagemErroFloat(linha, coluna, lexema);
-						return lexema;
-					}
+					
+					
 				}
 				if(caracter == ';') {
 					// int correto
@@ -91,18 +82,26 @@ public class Scanner {
 			// TIPO FLOAT
 			if(caracter == '.') {
 				caracter = read.leituraCaracterArquivo();
+				
 				if(Character.isDigit(caracter)) {
+					forma_token = forma_token + caracter;
 					caracter = read.leituraCaracterArquivo();
 					if(caracter == ';') {
 						// float correto
 						
 					}
+					
+					
 				}
 				
 				if(caracter == ';') {
 					//mensagemErroFloat(linha,coluna);
 					break;
 				}
+				if(caracter == ' ') {
+					
+				}
+				
 				
 					
 			}
