@@ -8,11 +8,13 @@ public class Main {
 		
 		Scanner scanner = new Scanner();
 		
-		Lexema l = scanner.scannerToken(); 
+		Token l = scanner.scannerToken(); 
 		
-		while(l.getToken() != Token.FIM_DE_ARQUIVO_TOKEN) {
-			
+		while(l.getToken() != Dicionario.FIM_DE_ARQUIVO_TOKEN) {
+			System.out.println(l);
 			l = scanner.scannerToken();
+			
+			
 		}
 	}
 

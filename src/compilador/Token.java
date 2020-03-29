@@ -1,43 +1,23 @@
 package compilador;
 
-public enum Token {
+public class Token {
+	String lexema;
+	Dicionario token;
 	
-	TIPO_INT_TOKEN(1),
-	TIPO_FLOAT_TOKEN(2),
-	TIPO_CHAR_TOKEN(3),
-	
-	IDENTIFICADOR_TOKEN(4),
-	
-	
-	PR_WHILE_TOKEN(5),
-	PR_IF_TOKEN(6),
-	PR_FOR_TOKEN(7),
-	PR_ELSE_TOKEN(8),
-	PR_MAIN_TOKEN(9),
-	PR_DO_TOKEN(10),
-	PR_INT_TOKEN(11),
-	PR_FLOAT_TOKEN(12),
-	PR_CHAR_TOKEN(13),
-	
-	ABRE_PARENTESE_TOKEN(14),
-	FECHA_PARENTESE_TOKEN(15),
-	ABRE_CHAVE_TOKEN(16),
-	FECHA_CHAVE_TOKEN(17),
-	VIRGULA_TOKEN(18),
-	PONTO_E_VIRGULA_TOKEN(19),
-	
-	
-	FIM_DE_ARQUIVO_TOKEN(20);
-	
-	private int id;
-	
-	Token(int id) {
-		this.id = id;
+	public Token(String lexema,Dicionario token) {
+		this.lexema = lexema;
+		this.token = token;
 	}
 	
-	public int getId() {
-		return id;
+	public Dicionario getToken() {
+		return token;
 	}
 	
+	public String getTipo_Token() {
+		return lexema;
+	}
 	
+	public String toString() {
+		return ""+lexema+" token: "+token;
+	}
 }
