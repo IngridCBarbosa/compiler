@@ -1,5 +1,3 @@
-int  main ( ) {
-
-	char letraA = 'a' ;
-
-}
+x/2;
+// ingrid caroline, fazendo o compilador
+int x = 10;

@@ -14,9 +14,7 @@ public class Scanner {
 	public Token scannerToken() throws IOException {
 		
 		String forma_lexema = "";
-		
-		caracter = read.leituraCaracterArquivo();
-		
+			
 		
 		while(Character.isWhitespace(caracter)) {
 			if(caracter == '\n' ) {
@@ -56,6 +54,7 @@ public class Scanner {
 			}
 			return new Token(forma_lexema, Dicionario.TIPO_INT_TOKEN);
 		}
+		
 		
 		// NUMEROS FLOAT INICIADO POR PONTO
 		if(caracter == '.') {
@@ -185,6 +184,27 @@ public class Scanner {
 				caracter = read.leituraCaracterArquivo();
 			}
 			return new Token(forma_lexema, Dicionario.OP_ARITMETICO_MULTIPLICACAO_TOKEN);
+		}
+		
+		
+		// COMENTÁRIO DE LINHA ÚNICA
+		if(caracter == '/') {
+			forma_lexema = forma_lexema + caracter;
+			caracter = read.leituraCaracterArquivo();
+			if(caracter == '/') {
+				forma_lexema = forma_lexema + caracter;
+				caracter = read.leituraCaracterArquivo();
+				while(Character.isLetterOrDigit(caracter)) {
+					forma_lexema = forma_lexema + caracter;
+					caracter = read.leituraCaracterArquivo();
+				}
+				if(caracter == '\n') {
+					caracter = read.leituraCaracterArquivo();
+					
+				}
+			} else {
+				return new Token(forma_lexema, Dicionario.OP_ARITMETICO_DIVISAO_TOKEN);
+			}
 		}
 		
 		// PALAVRA RESERVADA OU IDENTIFICADORES
