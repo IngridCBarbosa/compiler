@@ -39,10 +39,10 @@ public class Scanner {
 				if(caracter == '.') {
 					forma_lexema = forma_lexema + caracter;
 					caracter = read.leituraCaracterArquivo();
-					if(caracter == ' ') {
+					if(caracter == ' ' || caracter == ';' || caracter == '\n' || caracter == '|') {
 						coluna++;
 						mensagemDeErroFloat(linha, coluna);
-						break;
+						System.exit(0);
 					}
 					while(Character.isDigit(caracter)) {
 						forma_lexema = forma_lexema + caracter;
@@ -60,9 +60,10 @@ public class Scanner {
 		if(caracter == '.') {
 			forma_lexema = forma_lexema + caracter;
 			caracter = read.leituraCaracterArquivo();
-			if(caracter == ' ') {
-				mensagemDeErroFloat(linha, coluna);
-				return new Token(forma_lexema, Dicionario.ERRO);
+			if(caracter == ' ' ) {
+				 mensagemDeErroFloat(linha, coluna);
+				System.exit(0);
+				
 			}
 			while(Character.isDigit(caracter)) {
 				forma_lexema = forma_lexema + caracter;
@@ -91,7 +92,8 @@ public class Scanner {
 					if(caracter == aspasSimples) {
 						forma_lexema = forma_lexema + caracter;
 						mensagemDeErroChar(linha, coluna);
-						break;
+						System.exit(0);
+					
 					}
 				}
 				
@@ -151,7 +153,7 @@ public class Scanner {
 			return new Token(forma_lexema, Dicionario.VIRGULA_TOKEN);
 		}
 		
-		// OPERADOR RELACIONAL
+		// OPERADOR ARITMÉTICO IGUAL
 		
 		if(caracter == '=') {
 			while(caracter == '=') {
@@ -160,7 +162,7 @@ public class Scanner {
 			}
 			return new Token(forma_lexema, Dicionario.OP_ARITMETICO_IGUAL_TOKEN);
 		}
-		
+		// OPERADOR ARITMETICO SOMA
 		if(caracter == '+') {
 			while(caracter == '+') {
 				forma_lexema = forma_lexema + caracter;
@@ -168,7 +170,7 @@ public class Scanner {
 			}
 			return new Token(forma_lexema, Dicionario.OP_ARITMETICO_ADICAO_TOKEN);
 		}
-		
+		// OPERADOR ARITMÉTICO SUBTRAÇÃO
 		if(caracter == '-') {
 			while(caracter == '-') {
 				forma_lexema = forma_lexema + caracter;
@@ -177,7 +179,7 @@ public class Scanner {
 			
 			return new Token(forma_lexema, Dicionario.OP_ARITMETICO_SUBTRACAO_TOKEN);
 		}
-		
+		// OPERADOR ARITMÉTICO MULTIPLICAÇÃO
 		if(caracter == '*') {
 			while(caracter == '*') {
 				forma_lexema = forma_lexema + caracter;
@@ -186,26 +188,11 @@ public class Scanner {
 			return new Token(forma_lexema, Dicionario.OP_ARITMETICO_MULTIPLICACAO_TOKEN);
 		}
 		
+		// OPERADOR RELACIONAL
+		
 		
 		// COMENTÁRIO DE LINHA ÚNICA
-		if(caracter == '/') {
-			forma_lexema = forma_lexema + caracter;
-			caracter = read.leituraCaracterArquivo();
-			if(caracter == '/') {
-				forma_lexema = forma_lexema + caracter;
-				caracter = read.leituraCaracterArquivo();
-				while(Character.isLetterOrDigit(caracter)) {
-					forma_lexema = forma_lexema + caracter;
-					caracter = read.leituraCaracterArquivo();
-				}
-				if(caracter == '\n') {
-					caracter = read.leituraCaracterArquivo();
-					
-				}
-			} else {
-				return new Token(forma_lexema, Dicionario.OP_ARITMETICO_DIVISAO_TOKEN);
-			}
-		}
+		
 		
 		// PALAVRA RESERVADA OU IDENTIFICADORES
 		if( caracter == '_' || Character.isLetter(caracter)) {
@@ -219,7 +206,11 @@ public class Scanner {
 		if(caracter == '|') {
 			return new Token("-1", Dicionario.FIM_DE_ARQUIVO_TOKEN);
 		}
-		return new Token(forma_lexema, Dicionario.ERRO);
+		
+		mensagemCaracterInexistente(linha, coluna);
+		System.exit(0);
+		return null;
+		
 	}
 	
 	private Token buscaPalavraReservada(String p) {
@@ -254,6 +245,10 @@ public class Scanner {
 	
 	private void mensagemDeErroChar(int linha, int coluna) {
 		System.out.println("ERRO na linha "+linha+", coluna "+coluna+". Char mal formado");
+	}
+	
+	private void mensagemCaracterInexistente(int linha, int colune) {
+		System.out.println("ERRO na linha "+linha+", coluna "+coluna+". Caracter Inexistente");
 	}
 
 }
