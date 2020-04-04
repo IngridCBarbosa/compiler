@@ -8,8 +8,8 @@ public class Scanner {
 	private static char caracter = ' ';
 	
 	
-	private int linha = 0;
-	private int coluna = 0;
+	private static int linha = 0;
+	private static int coluna = 0;
 	
 	public Token scannerToken() throws IOException {
 		
@@ -17,16 +17,21 @@ public class Scanner {
 			
 		
 		while(Character.isWhitespace(caracter)) {
-			if(caracter == '\n' ) {
-				coluna = 0;
-				linha++;
-			}
+			
 			if(caracter == '\t') {
 				coluna = coluna + 4;
 			}
+			if (caracter == '\n') {
+				linha++;
+				coluna = 0;
+				
+			}
 			else {
 				coluna++;
+				
 			}
+			
+			
 			caracter = read.leituraCaracterArquivo();
 		}
 		
@@ -40,7 +45,6 @@ public class Scanner {
 					forma_lexema = forma_lexema + caracter;
 					caracter = read.leituraCaracterArquivo();
 					if(caracter == ' ' || caracter == ';' || caracter == '\n' || caracter == '|') {
-						coluna++;
 						mensagemDeErroFloat(linha, coluna);
 						System.exit(0);
 					}
@@ -156,9 +160,13 @@ public class Scanner {
 		// OPERADOR ARITMÉTICO IGUAL
 		
 		if(caracter == '=') {
-			while(caracter == '=') {
+			forma_lexema = forma_lexema+caracter;
+			caracter = read.leituraCaracterArquivo();
+			// OPERADOR RELACIONAL IGUAL IGUAL
+			if(caracter == '=') {
 				forma_lexema = forma_lexema + caracter;
 				caracter = read.leituraCaracterArquivo();
+				return new Token(forma_lexema,Dicionario.OP_RELACIONAL_IGUAL_IGUAL);
 			}
 			return new Token(forma_lexema, Dicionario.OP_ARITMETICO_IGUAL_TOKEN);
 		}
@@ -188,11 +196,59 @@ public class Scanner {
 			return new Token(forma_lexema, Dicionario.OP_ARITMETICO_MULTIPLICACAO_TOKEN);
 		}
 		
-		// OPERADOR RELACIONAL
+		// OPERADOR RELACIONAL MAIOR / MAIOR IGUAL
+		if(caracter == '>'){
+			forma_lexema = forma_lexema + caracter;
+			caracter = read.leituraCaracterArquivo();
+			if(caracter == '=') {
+				forma_lexema = forma_lexema + caracter;
+				caracter = read.leituraCaracterArquivo();
+				return new Token(forma_lexema, Dicionario.OP_RELACIONAL_MAIOR_IGUAL_TOKEN);
+			}
+			return new Token(forma_lexema, Dicionario.OP_RELACIONAL_MAIOR_TOKEN);
+		}
+		
+		// OPERADOR RELACIONAL MENOR / MENOR IGUAL
+		if(caracter == '<') {
+			forma_lexema = forma_lexema + caracter;
+			caracter = read.leituraCaracterArquivo();
+			if(caracter == '=') {
+				forma_lexema = forma_lexema + caracter;
+				caracter = read.leituraCaracterArquivo();
+				return new Token(forma_lexema,Dicionario.OP_RELACIONAL_MENOR_IGUAL_TOKEN);
+			}
+			return new Token(forma_lexema,Dicionario.OP_RELACIONAL_MENOR_TOKEN);
+		}
+		
+		// OPERADOR RELACIONAL DEFERENTE
+		if(caracter == '!') {
+			forma_lexema = forma_lexema + caracter;
+			caracter = read.leituraCaracterArquivo();
+			if(caracter == '=') {
+				forma_lexema = forma_lexema + caracter;
+				caracter = read.leituraCaracterArquivo();
+				return new Token(forma_lexema, Dicionario.OP_RELACIONAL_DIFERENTE_TOKEN);
+			}
+			mensagemCaracterInexistente(linha, coluna);
+			System.exit(0);
+		}
+		
+		// COMENTARIO LINHA
+		if(caracter == '/') {
+			forma_lexema = forma_lexema + caracter;
+			caracter = read.leituraCaracterArquivo();
+			if(caracter == '/') {
+				while(Character.isLetterOrDigit(caracter)) {
+					// falta completar 
+				}
+			}
+			return new Token (forma_lexema,Dicionario.OP_ARITMETICO_DIVISAO_TOKEN);
+		}
 		
 		
-		// COMENTÁRIO DE LINHA ÚNICA
 		
+		
+	
 		
 		// PALAVRA RESERVADA OU IDENTIFICADORES
 		if( caracter == '_' || Character.isLetter(caracter)) {
