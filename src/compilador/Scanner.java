@@ -88,6 +88,7 @@ public class Scanner {
 				caracter = read.leituraCaracterArquivo();
 				if(caracter == aspasSimples) {
 					forma_lexema = forma_lexema + caracter;
+					caracter = read.leituraCaracterArquivo();
 					return new Token(forma_lexema, Dicionario.TIPO_CHAR_TOKEN);
 				}
 				while(Character.isLetterOrDigit(caracter)) {
@@ -238,15 +239,23 @@ public class Scanner {
 			forma_lexema = forma_lexema + caracter;
 			caracter = read.leituraCaracterArquivo();
 			if(caracter == '/') {
-				while(Character.isLetterOrDigit(caracter)) {
-					// falta completar 
+				while(caracter != '\n') {
+					if(caracter == ' ') {
+						coluna++;
+					}
+					if( caracter == '\t') {
+						coluna = coluna + 4;
+					}
+					caracter = read.leituraCaracterArquivo();
+				}
+				if(caracter == '\n') {
+					linha++;
+					coluna = 0;
+					return scannerToken();
 				}
 			}
 			return new Token (forma_lexema,Dicionario.OP_ARITMETICO_DIVISAO_TOKEN);
 		}
-		
-		
-		
 		
 	
 		
