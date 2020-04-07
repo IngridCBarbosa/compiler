@@ -49,7 +49,7 @@ public class Scanner {
 				if(caracter == '.') {
 					forma_lexema = forma_lexema + caracter;
 					caracter = read.leituraCaracterArquivo();
-					if(caracter == ' ' || caracter == ';' || caracter == '\n' || caracter == '|') {
+					if(!Character.isDigit(caracter)) {
 						mensagemDeErroFloat(linha, coluna);
 						System.exit(0);
 					}
@@ -235,7 +235,7 @@ public class Scanner {
 				caracter = read.leituraCaracterArquivo();
 				return new Token(forma_lexema, Dicionario.OP_RELACIONAL_DIFERENTE_TOKEN);
 			}
-			mensagemCaracterInexistente(linha, coluna);
+			mensagemOperadorDiferenteIncompleto(linha, coluna);;
 			System.exit(0);
 		}
 		
@@ -278,6 +278,10 @@ public class Scanner {
 					}
 					if( caracter == '\t') {
 						coluna = coluna + 4;
+					}
+					if(caracter == '|') {
+						mensagemComentarioBlocoErro(linha, coluna);
+						System.exit(0);
 					}
 					caracter = read.leituraCaracterArquivo();
 					
@@ -362,5 +366,8 @@ public class Scanner {
 	}
 	private void mensagemComentarioBlocoErro(int linha, int colune) {
 		System.out.println("ERRO na linha "+linha+", coluna "+coluna+". EOF sem fechar o comentário");
+	}
+	private void mensagemOperadorDiferenteIncompleto(int linha, int coluna) {
+		System.out.println("Erro na linha "+linha+", coluna "+coluna+". ! não sucedida de =");
 	}
 }
