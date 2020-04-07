@@ -1,3 +1,7 @@
-x/2;
-// ingrid caroline, fazendo o compilador
-int x = 10;
+int main () {
+ // teste comentario em linha
+ int x;
+ /*************/
+}
+
+/*************/
