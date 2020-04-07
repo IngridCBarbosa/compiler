@@ -4,12 +4,17 @@ import java.io.IOException;
 
 public class Scanner {
 	
-	private ReadeFile read = new ReadeFile();
+	
+	private ReadeFile read;
 	private static char caracter = ' ';
 	
 	
 	private static int linha = 0;
 	private static int coluna = 0;
+	
+	public Scanner(String nomeArquivo) {
+		read = new ReadeFile(nomeArquivo);
+	}
 	
 	public Token scannerToken() throws IOException {
 		
