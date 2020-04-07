@@ -257,6 +257,11 @@ public class Scanner {
 			// COMENTARIO BLOCO
 			if(caracter == '*') {
 				caracter = read.leituraCaracterArquivo();
+				
+				while(caracter == '*'|| caracter == ' ' || caracter == '\n' || caracter == '\t' ) {
+					caracter = read.leituraCaracterArquivo();		
+				}
+				
 				while(caracter != '*') {
 					
 					if(caracter == '\n') {
@@ -272,22 +277,22 @@ public class Scanner {
 					caracter = read.leituraCaracterArquivo();
 					
 				}
-				
-				if(caracter == '*') {
-					caracter = read.leituraCaracterArquivo();
-					while(caracter != '/') {
-						caracter = read.leituraCaracterArquivo();
-					}
-					if(caracter == '/') {
-						return scannerToken();
-					}
-					else {
-						mensagemComentarioBlocoErro(linha, coluna);
-						System.exit(0);
-					}
+					
+				while(caracter == '*'|| caracter == ' ' || caracter == '\n' || caracter == '\t' ) {
+						caracter = read.leituraCaracterArquivo();		
 				}
-			
+				
+				if(caracter == '/') {	
+					caracter = read.leituraCaracterArquivo();
+					return scannerToken();
+				}
+				else {
+					mensagemComentarioBlocoErro(linha, coluna);						
+					System.exit(0);
+				}
 			}
+			
+			
 			
 			return new Token (forma_lexema,Dicionario.OP_ARITMETICO_DIVISAO_TOKEN);
 		}
@@ -351,6 +356,6 @@ public class Scanner {
 		System.out.println("ERRO na linha "+linha+", coluna "+coluna+". Caracter Inexistente");
 	}
 	private void mensagemComentarioBlocoErro(int linha, int colune) {
-		System.out.println("ERRO na linha "+linha+", coluna "+coluna+". EOF ");
+		System.out.println("ERRO na linha "+linha+", coluna "+coluna+". EOF sem fechar o comentário");
 	}
 }
