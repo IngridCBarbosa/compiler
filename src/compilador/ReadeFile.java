@@ -10,9 +10,9 @@ public class ReadeFile {
 	private InputStreamReader entradaFormatada ; 
 	 
 	
-	public ReadeFile()  {
+	public ReadeFile(String nomeArquivo)  {
 		try {
-			entrada = new FileInputStream("file.txt");
+			entrada = new FileInputStream(nomeArquivo);
 			entradaFormatada = new InputStreamReader(entrada);
 		} catch (FileNotFoundException e) {
 			
