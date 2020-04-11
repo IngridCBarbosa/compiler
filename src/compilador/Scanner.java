@@ -267,32 +267,18 @@ public class Scanner {
 			if(caracter == '*') {
 				caracter = read.leituraCaracterArquivo();
 				
-				while(caracter == '*'|| caracter == ' ' || caracter == '\n' || caracter == '\t' ) {
-					caracter = read.leituraCaracterArquivo();		
-				}
-				
-				while(caracter != '*') {
-					
-					if(caracter == '\n') {
-						coluna = 0;
-						linha++;
-					}
-					if(caracter == ' ') {
-						coluna++;
-					}
-					if( caracter == '\t') {
-						coluna = coluna + 4;
-					}
-					if(caracter == '|') {
-						mensagemComentarioBlocoErro(linha, coluna);
-						System.exit(0);
-					}
+				while(true) {
 					caracter = read.leituraCaracterArquivo();
-					
-				}
-					
-				while(caracter == '*'|| caracter == ' ' || caracter == '\n' || caracter == '\t' ) {
-						caracter = read.leituraCaracterArquivo();		
+					if(caracter == '*') {
+						caracter = read.leituraCaracterArquivo();
+						if(caracter == '/') {
+							break;
+						}
+					}
+					// FIM DE ARQUIVO
+					if(caracter == '|') {
+						break;
+					}
 				}
 				
 				if(caracter == '/') {	
@@ -304,9 +290,6 @@ public class Scanner {
 					System.exit(0);
 				}
 			}
-			
-			
-			
 			return new Token (forma_lexema,Dicionario.OP_ARITMETICO_DIVISAO_TOKEN);
 		}
 		
@@ -374,4 +357,8 @@ public class Scanner {
 	private void mensagemOperadorDiferenteIncompleto(int linha, int coluna) {
 		System.out.println("Erro na linha "+linha+", coluna "+coluna+". ! não sucedida de =");
 	}
+	
+	
+	
+ 
 }
