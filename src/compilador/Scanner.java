@@ -69,7 +69,7 @@ public class Scanner {
 		if(caracter == '.') {
 			forma_lexema = forma_lexema + caracter;
 			caracter = read.leituraCaracterArquivo();
-			if(caracter == ' ' ) {
+			if(!Character.isDigit(caracter) ) {
 				 mensagemDeErroFloat(linha, coluna);
 				System.exit(0);
 				
@@ -88,7 +88,7 @@ public class Scanner {
 		if(caracter == aspasSimples) {
 			forma_lexema = forma_lexema + caracter;
 			caracter = read.leituraCaracterArquivo();
-			while(Character.isLetterOrDigit(caracter)) {
+			while(Character.isLetterOrDigit(caracter) || caracter == ' ') {
 				forma_lexema = forma_lexema + caracter;
 				caracter = read.leituraCaracterArquivo();
 				if(caracter == aspasSimples) {
@@ -105,6 +105,10 @@ public class Scanner {
 						System.exit(0);
 					
 					}
+				}
+				if(caracter != aspasSimples) {
+					mensagemDeErroChar(linha, coluna);
+					System.exit(0);
 				}
 				
 			}
