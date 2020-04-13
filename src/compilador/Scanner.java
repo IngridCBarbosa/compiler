@@ -88,7 +88,7 @@ public class Scanner {
 		if(caracter == aspasSimples) {
 			forma_lexema = forma_lexema + caracter;
 			caracter = read.leituraCaracterArquivo();
-			while(Character.isLetterOrDigit(caracter) || caracter == ' ') {
+			while(Character.isLetterOrDigit(caracter)) {
 				forma_lexema = forma_lexema + caracter;
 				caracter = read.leituraCaracterArquivo();
 				if(caracter == aspasSimples) {
@@ -349,7 +349,7 @@ public class Scanner {
 	}
 	
 	private void mensagemCaracterInexistente(int linha, int colune) {
-		System.out.println("ERRO na linha "+linha+", coluna "+coluna+". Caracter Inexistente");
+		System.out.println("ERRO na linha "+linha+", coluna "+coluna+". Caracter Invalido");
 	}
 	private void mensagemComentarioBlocoErro(int linha, int colune) {
 		System.out.println("ERRO na linha "+linha+", coluna "+coluna+". EOF sem fechar o comentário");
@@ -358,7 +358,4 @@ public class Scanner {
 		System.out.println("Erro na linha "+linha+", coluna "+coluna+". ! não sucedida de =");
 	}
 	
-	
-	
- 
 }
