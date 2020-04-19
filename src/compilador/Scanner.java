@@ -64,7 +64,7 @@ public class Scanner {
 			return new Token(forma_lexema, Dicionario.TIPO_INT_TOKEN);
 		}
 		
-		
+		 
 		// NUMEROS FLOAT INICIADO POR PONTO
 		if(caracter == '.') {
 			forma_lexema = forma_lexema + caracter;
@@ -260,6 +260,7 @@ public class Scanner {
 				if(caracter == '\n') {
 					linha++;
 					coluna = 0;
+					//caracter = read.leituraCaracterArquivo();
 					return scannerToken();
 				}
 			}
@@ -339,6 +340,17 @@ public class Scanner {
 		}
 		
 	}
+	
+	
+	
+	public static int getLinha() {
+		return linha;
+	}
+
+	public static int getColuna() {
+		return coluna;
+	}
+
 	
 	private void mensagemDeErroFloat(int linha, int coluna) {
 		System.out.println("ERRO na linha "+linha+", coluna "+coluna+". Float mal formado");
