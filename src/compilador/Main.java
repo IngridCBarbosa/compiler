@@ -6,7 +6,7 @@ public class Main {
 
 	public static void main(String[] args) throws IOException  {
 		
-		Scanner scanner = new Scanner(args[0]);
+/*		Scanner scanner = new Scanner(args[0]);
 		
 		Token l = scanner.scannerToken(); 
 		
@@ -16,6 +16,11 @@ public class Main {
 			
 			
 		}
+*/
+		Parser parser = new Parser(args[0]);
+		
+		parser.programa();
 	}
 
 }
+
