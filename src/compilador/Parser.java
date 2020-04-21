@@ -186,9 +186,6 @@ public class Parser {
 		else if (nextToken.getToken() == Dicionario.ABRE_CHAVE_TOKEN) {
 			bloco();
 		}
-		else {
-			// ERROOO, MAS QUAL?????
-		}
 	}
 	
 	private void atribuicao() throws IOException {
@@ -221,18 +218,13 @@ public class Parser {
 	}
 	
 	private void expressaoLinha() throws IOException {
-		do {
-			if(nextToken.getToken() == Dicionario.OP_ARITMETICO_ADICAO_TOKEN) {
-				nextToken = scanner.scannerToken();
-				fator();
-				expressaoLinha();
-			} 
-			else if(nextToken.getToken() == Dicionario.OP_ARITMETICO_SUBTRACAO_TOKEN) {
-				nextToken = scanner.scannerToken();
-				fator();
-				expressaoLinha();
-			}
-		}while(nextToken.getToken() == Dicionario.OP_ARITMETICO_ADICAO_TOKEN || nextToken.getToken() == Dicionario.OP_ARITMETICO_SUBTRACAO_TOKEN);
+		
+		if(nextToken.getToken() == Dicionario.OP_ARITMETICO_ADICAO_TOKEN || nextToken.getToken() == Dicionario.OP_ARITMETICO_SUBTRACAO_TOKEN) {
+			nextToken = scanner.scannerToken();
+			expressaoAritmetica();
+		} 
+			
+	
 	}
 	
 	private void termoLinha() throws IOException {
