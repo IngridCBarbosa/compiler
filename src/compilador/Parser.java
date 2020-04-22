@@ -50,9 +50,15 @@ public class Parser {
 		}
 		nextToken = scanner.scannerToken();
 		
-		declaracaoVariavel();
+		while(nextToken.getToken() == Dicionario.PR_CHAR_TOKEN || nextToken.getToken() == Dicionario.PR_FLOAT_TOKEN || nextToken.getToken() == Dicionario.PR_INT_TOKEN ){
+			declaracaoVariavel();
+		}
 		
-		comando();
+		while(nextToken.getToken() == Dicionario.IDENTIFICADOR_TOKEN || nextToken.getToken() == Dicionario.ABRE_CHAVE_TOKEN
+				|| nextToken.getToken() == Dicionario.PR_WHILE_TOKEN || nextToken.getToken() == Dicionario.PR_DO_TOKEN
+				|| nextToken.getToken() == Dicionario.PR_IF_TOKEN) {
+			comando();
+		}
 		
 		if(nextToken.getToken() != Dicionario.FECHA_CHAVE_TOKEN) {
 			mensagemErroFechaChave(Scanner.getLinha(), Scanner.getColuna());
@@ -64,9 +70,7 @@ public class Parser {
 	
 	private void declaracaoVariavel() throws IOException {
 		
-		
-		while(nextToken.getToken() == Dicionario.PR_CHAR_TOKEN || nextToken.getToken() == Dicionario.PR_FLOAT_TOKEN || nextToken.getToken() == Dicionario.PR_INT_TOKEN ){
-			
+	
 			nextToken = scanner.scannerToken();
 			
 			if(nextToken.getToken() != Dicionario.IDENTIFICADOR_TOKEN) {
@@ -89,14 +93,13 @@ public class Parser {
 				System.exit(0);
 			}
 			nextToken = scanner.scannerToken();
-		}
+		
 		
 	}
 	
 	private void comando() throws IOException {
 		
-		do {
-			
+		
 			if(nextToken.getToken() == Dicionario.IDENTIFICADOR_TOKEN || nextToken.getToken() == Dicionario.ABRE_CHAVE_TOKEN) {
 				comandoSimples();
 			}
@@ -107,13 +110,13 @@ public class Parser {
 				nextToken = scanner.scannerToken();
 				if(nextToken.getToken() == Dicionario.ABRE_PARENTESE_TOKEN) {
 					nextToken = scanner.scannerToken();
-					//expressaoRelacional();
+					expressaoRelacional();
 					if(nextToken.getToken() == Dicionario.FECHA_PARENTESE_TOKEN) {
 						nextToken = scanner.scannerToken();
-						// comando();
+						 comando();
 						if(nextToken.getToken() == Dicionario.PR_ELSE_TOKEN) {
 							nextToken = scanner.scannerToken();
-							//comando();
+							comando();
 						}
 					}else {
 						mensagemErroFechaParentese(Scanner.getLinha(), Scanner.getColuna());
@@ -125,9 +128,7 @@ public class Parser {
 				}
 			}
 			
-		}while(nextToken.getToken() == Dicionario.IDENTIFICADOR_TOKEN || nextToken.getToken() == Dicionario.ABRE_CHAVE_TOKEN
-				|| nextToken.getToken() == Dicionario.PR_WHILE_TOKEN || nextToken.getToken() == Dicionario.PR_DO_TOKEN
-				|| nextToken.getToken() == Dicionario.PR_IF_TOKEN);
+		
 	}
 	
 	
@@ -136,10 +137,10 @@ public class Parser {
 			nextToken = scanner.scannerToken();
 			if(nextToken.getToken() == Dicionario.ABRE_PARENTESE_TOKEN) {
 				nextToken = scanner.scannerToken();
-				// expressaoRelacional();
+				expressaoRelacional();
 				if(nextToken.getToken() == Dicionario.FECHA_PARENTESE_TOKEN) {
 					nextToken = scanner.scannerToken();
-					//comando();
+					comando();
 				} else {
 					mensagemErroFechaParentese(Scanner.getLinha(), Scanner.getColuna());
 					System.exit(0);
@@ -149,26 +150,26 @@ public class Parser {
 				System.exit(0);
 			}
 		} else if(nextToken.getToken() == Dicionario.PR_DO_TOKEN) {
-			nextToken = scanner.scannerToken();
-			//comando();
+			nextToken=scanner.scannerToken();
+			comando();
 			if(nextToken.getToken() == Dicionario.PR_WHILE_TOKEN) {
 				nextToken = scanner.scannerToken();
 				if(nextToken.getToken() == Dicionario.ABRE_PARENTESE_TOKEN) {
 					nextToken = scanner.scannerToken();
-					//expressaoRelacional();
+					expressaoRelacional();
 					if(nextToken.getToken() == Dicionario.FECHA_PARENTESE_TOKEN) {
 						nextToken = scanner.scannerToken();
 						if(nextToken.getToken() == Dicionario.PONTO_E_VIRGULA_TOKEN) {
 							nextToken = scanner.scannerToken();
 						} else {
-							mensagemErroPontoEVirgula(Scanner.getLinha(), Scanner.getColuna());
+							mensagemErroPontoEVirgula(Scanner.getLinha(), Scanner.getLinha());
 							System.exit(0);
 						}
-					} else {
+					}else {
 						mensagemErroFechaParentese(Scanner.getLinha(), Scanner.getColuna());
 						System.exit(0);
 					}
-				} else {
+				}else {
 					mensagemAbreParentese(Scanner.getLinha(), Scanner.getColuna());
 					System.exit(0);
 				}
@@ -176,6 +177,7 @@ public class Parser {
 				mensagemErroSemWhile(Scanner.getLinha(), Scanner.getColuna());
 				System.exit(0);
 			}
+			
 		}
 	}
 	
@@ -222,8 +224,8 @@ public class Parser {
 		if(nextToken.getToken() == Dicionario.OP_ARITMETICO_ADICAO_TOKEN || nextToken.getToken() == Dicionario.OP_ARITMETICO_SUBTRACAO_TOKEN) {
 			nextToken = scanner.scannerToken();
 			expressaoAritmetica();
-		} 
 			
+		} 	
 	
 	}
 	
@@ -256,7 +258,9 @@ public class Parser {
 			nextToken = scanner.scannerToken();
 		}
 		else if(nextToken.getToken() == Dicionario.ABRE_PARENTESE_TOKEN) {
+			
 			nextToken = scanner.scannerToken();
+			termoLinha();
 			expressaoAritmetica();
 			if(nextToken.getToken() == Dicionario.FECHA_PARENTESE_TOKEN) {
 				nextToken = scanner.scannerToken();
@@ -264,12 +268,44 @@ public class Parser {
 				mensagemErroFechaParentese(Scanner.getLinha(), Scanner.getLinha());
 				System.exit(0);
 			}
+			
 		} else {
 			mensagemErroFator(Scanner.getLinha(), Scanner.getColuna());
 			System.exit(0);
 		}
 	}
 	
+	private void expressaoRelacional() throws IOException {
+		expressaoAritmetica();
+		operadorRelacional();
+		expressaoAritmetica();
+		
+	}
+	
+	private void operadorRelacional() throws IOException {
+		if(nextToken.getToken() == Dicionario.OP_RELACIONAL_DIFERENTE_TOKEN) {
+			nextToken = scanner.scannerToken();
+		}
+		else if(nextToken.getToken() == Dicionario.OP_RELACIONAL_IGUAL_IGUAL) {
+			nextToken = scanner.scannerToken();
+		}
+		else if(nextToken.getToken() == Dicionario.OP_RELACIONAL_MAIOR_IGUAL_TOKEN) {
+			nextToken = scanner.scannerToken();
+		}
+		else if(nextToken.getToken() == Dicionario.OP_RELACIONAL_MAIOR_TOKEN) {
+			nextToken = scanner.scannerToken();
+		}
+		else if(nextToken.getToken() == Dicionario.OP_RELACIONAL_MENOR_IGUAL_TOKEN) {
+			nextToken = scanner.scannerToken();
+		}
+		else if(nextToken.getToken() == Dicionario.OP_RELACIONAL_MENOR_TOKEN) {
+			nextToken = scanner.scannerToken();
+		}
+		else {
+			mensagemErroOperadoresRelacionario(Scanner.getLinha(), Scanner.getColuna());
+			System.exit(0);
+		}
+	}
 	
 	
 	
@@ -305,6 +341,9 @@ public class Parser {
 		System.out.println("Erro na linha "+linha+", coluna "+coluna+". Sem ID,TIP_INT,TIPO_FLOAT ou TIPO_CHAR");
 	}
 	private void mensagemErroOperadorAtirmeticoIgual(int linha, int coluna) {
-		System.out.println("Erro na linha +"+linha+", coluna "+coluna+". Sem = na atribuição");
+		System.out.println("Erro na linha "+linha+", coluna "+coluna+". Sem = na atribuiÃ§Ã£o");
+	}
+	private void mensagemErroOperadoresRelacionario(int linha, int coluna) {
+		System.out.println("Erro na linha "+linha+", coluna "+coluna+". Sem operadores relacionais !=,==, >=, <=, >, <");
 	}
 }
