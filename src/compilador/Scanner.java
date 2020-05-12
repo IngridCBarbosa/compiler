@@ -117,53 +117,40 @@ public class Scanner {
 		// CARACTERES ESPECIAIS
 		// ABRE PARENTESE
 		if(caracter == '(') {
-			while(caracter == '(') {
-				forma_lexema = forma_lexema + caracter;
-				caracter = read.leituraCaracterArquivo();
-			}
+			forma_lexema = forma_lexema + caracter;
+			caracter = read.leituraCaracterArquivo();
 			return new Token(forma_lexema, Dicionario.ABRE_PARENTESE_TOKEN);
 		}
 		// FECHA PARENTESE
 		if(caracter == ')') {
-			while(caracter == ')') {
-				forma_lexema = forma_lexema + caracter;
-				caracter = read.leituraCaracterArquivo();
-			}
+			forma_lexema = forma_lexema + caracter;
+			caracter = read.leituraCaracterArquivo();
 			return new Token(forma_lexema, Dicionario.FECHA_PARENTESE_TOKEN);
 		}
 		// ABRE CHAVE
 		if(caracter == '{') {
-			while(caracter == '{') {
-				forma_lexema = forma_lexema + caracter;
-				caracter = read.leituraCaracterArquivo();
-			}
+			forma_lexema = forma_lexema + caracter;
+			caracter = read.leituraCaracterArquivo();
 			return new Token(forma_lexema, Dicionario.ABRE_CHAVE_TOKEN);
 		}
 		// FECHA CHAVES
 		if(caracter == '}') {
-			while(caracter == '}') {
-				forma_lexema = forma_lexema + caracter;
-				caracter = read.leituraCaracterArquivo();
-			}
+			forma_lexema = forma_lexema + caracter;
+			caracter = read.leituraCaracterArquivo();
 			return new Token(forma_lexema, Dicionario.FECHA_CHAVE_TOKEN);
 		}
 		
 		// PONTO E VÍRGULA
 		if(caracter == ';') {
-			while(caracter == ';') {
-				forma_lexema = forma_lexema + caracter;
-				caracter = read.leituraCaracterArquivo();
-			}
+			forma_lexema = forma_lexema + caracter;
+			caracter = read.leituraCaracterArquivo();
 			return new Token(forma_lexema, Dicionario.PONTO_E_VIRGULA_TOKEN);
 		}
 		
 		// VÍRGULA
 		if(caracter == ',') {
-			while(caracter == ',') {
-				forma_lexema = forma_lexema + caracter;
-				caracter = read.leituraCaracterArquivo();
-			}
-			
+			forma_lexema = forma_lexema + caracter;
+			caracter = read.leituraCaracterArquivo();
 			return new Token(forma_lexema, Dicionario.VIRGULA_TOKEN);
 		}
 		
@@ -182,27 +169,20 @@ public class Scanner {
 		}
 		// OPERADOR ARITMETICO SOMA
 		if(caracter == '+') {
-			while(caracter == '+') {
-				forma_lexema = forma_lexema + caracter;
-				caracter = read.leituraCaracterArquivo();
-			}
+			forma_lexema = forma_lexema + caracter;
+			caracter = read.leituraCaracterArquivo();
 			return new Token(forma_lexema, Dicionario.OP_ARITMETICO_ADICAO_TOKEN);
 		}
 		// OPERADOR ARITMÉTICO SUBTRAÇÃO
 		if(caracter == '-') {
-			while(caracter == '-') {
-				forma_lexema = forma_lexema + caracter;
-				caracter = read.leituraCaracterArquivo();
-			}
-			
+			forma_lexema = forma_lexema + caracter;
+			caracter = read.leituraCaracterArquivo();
 			return new Token(forma_lexema, Dicionario.OP_ARITMETICO_SUBTRACAO_TOKEN);
 		}
 		// OPERADOR ARITMÉTICO MULTIPLICAÇÃO
 		if(caracter == '*') {
-			while(caracter == '*') {
-				forma_lexema = forma_lexema + caracter;
-				caracter = read.leituraCaracterArquivo();
-			}
+			forma_lexema = forma_lexema + caracter;
+			caracter = read.leituraCaracterArquivo();
 			return new Token(forma_lexema, Dicionario.OP_ARITMETICO_MULTIPLICACAO_TOKEN);
 		}
 		
@@ -260,7 +240,7 @@ public class Scanner {
 				if(caracter == '\n') {
 					linha++;
 					coluna = 0;
-					//caracter = read.leituraCaracterArquivo();
+					// caracter = read.leituraCaracterArquivo();
 					return scannerToken();
 				}
 			}

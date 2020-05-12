@@ -217,6 +217,7 @@ public class Parser {
 	private void termo() throws IOException {
 		fator();
 		termoLinha();
+		
 	}
 	
 	private void expressaoLinha() throws IOException {
@@ -260,6 +261,8 @@ public class Parser {
 		else if(nextToken.getToken() == Dicionario.ABRE_PARENTESE_TOKEN) {
 			
 			nextToken = scanner.scannerToken();
+			//expressaoAritmetica();
+			//expressaoLinha();
 			termoLinha();
 			expressaoAritmetica();
 			if(nextToken.getToken() == Dicionario.FECHA_PARENTESE_TOKEN) {
