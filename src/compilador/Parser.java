@@ -1,6 +1,7 @@
 package compilador;
 
 import java.io.IOException;
+import java.util.LinkedList;
 
 public class Parser {
 
@@ -8,9 +9,14 @@ public class Parser {
 	private Scanner scanner;
 	private Token nextToken;
 	
+	private int escopo = 0;
+	private static LinkedList<Tipo> tabelaSimbolos; 
+	
+	
 	public Parser(String nomeArquivo) throws IOException {
 		scanner = new Scanner(nomeArquivo);
 		nextToken = scanner.scannerToken();
+		tabelaSimbolos = new LinkedList<Tipo>();
 	}
 	  
 	// VALIDA O MAIN
@@ -38,6 +44,7 @@ public class Parser {
 		nextToken = scanner.scannerToken();
 		
 		bloco();
+		
 		System.out.println("PASSOU");
 	}
 	
@@ -48,10 +55,11 @@ public class Parser {
 			mensagemErroAbreChave(Scanner.getLinha(),Scanner.getColuna());
 			System.exit(0);
 		}
+		escopo++;
 		nextToken = scanner.scannerToken();
 		
 		while(nextToken.getToken() == Dicionario.PR_CHAR_TOKEN || nextToken.getToken() == Dicionario.PR_FLOAT_TOKEN || nextToken.getToken() == Dicionario.PR_INT_TOKEN ){
-			declaracaoVariavel();
+			declaracaoVariavel(nextToken.getToken().getId());
 		}
 		
 		while(nextToken.getToken() == Dicionario.IDENTIFICADOR_TOKEN || nextToken.getToken() == Dicionario.ABRE_CHAVE_TOKEN
@@ -64,20 +72,30 @@ public class Parser {
 			mensagemErroFechaChave(Scanner.getLinha(), Scanner.getColuna());
 			System.exit(0);
 		}
+		// adicionado aqui ao achar um fechaChaves dimiui um escopo 
+		exibeTudo();		
+		escopo--;
+		removeTodasVariaveiEscopoAtual(escopo);
 		nextToken = scanner.scannerToken();
 	
 	}
 	
-	private void declaracaoVariavel() throws IOException {
+	private void declaracaoVariavel(int idTipo) throws IOException {
 		
-	
+			Tipo tipoAux;
+			
 			nextToken = scanner.scannerToken();
+			
 			
 			if(nextToken.getToken() != Dicionario.IDENTIFICADOR_TOKEN) {
 				mensagemErroSemIdentificador(Scanner.getLinha(), Scanner.getColuna());
 				System.exit(0);
 			}
-		
+			
+			tipoAux = new Tipo(nextToken.getTipo_Token(), idTipo, escopo);
+			inserirNaTabelaSimbolos(tipoAux);
+			
+			
 			nextToken = scanner.scannerToken();
 			while(nextToken.getToken() == Dicionario.VIRGULA_TOKEN) {
 				nextToken = scanner.scannerToken();
@@ -85,6 +103,11 @@ public class Parser {
 					mensagemErroSemIdentificador(Scanner.getLinha(), Scanner.getColuna());
 					System.exit(0);
 				}
+				
+				tipoAux = new Tipo(nextToken.getTipo_Token(), idTipo, escopo);
+				inserirNaTabelaSimbolos(tipoAux);
+				
+				
 				nextToken = scanner.scannerToken();
 			}
 		
@@ -182,7 +205,12 @@ public class Parser {
 	}
 	
 	private void comandoSimples() throws IOException {
+		Tipo buscaVariavel;
 		if(nextToken.getToken() == Dicionario.IDENTIFICADOR_TOKEN) {
+			buscaVariavel = buscaEmTodosOsEscopos(nextToken.getTipo_Token());
+			if(buscaVariavel == null) {
+				// EXIBIR ERRO DE VARIAVEL NÂO DECLARADA
+			}
 			atribuicao();
 		}
 		else if (nextToken.getToken() == Dicionario.ABRE_CHAVE_TOKEN) {
@@ -259,10 +287,7 @@ public class Parser {
 			nextToken = scanner.scannerToken();
 		}
 		else if(nextToken.getToken() == Dicionario.ABRE_PARENTESE_TOKEN) {
-			
 			nextToken = scanner.scannerToken();
-			//expressaoAritmetica();
-			//expressaoLinha();
 			termoLinha();
 			expressaoAritmetica();
 			if(nextToken.getToken() == Dicionario.FECHA_PARENTESE_TOKEN) {
@@ -284,6 +309,37 @@ public class Parser {
 		expressaoAritmetica();
 		
 	}
+	// ADICIONA UM NÓ SEMPRE NO PRIMEIRO
+	private void inserirNaTabelaSimbolos(Tipo novoTipo) {
+		tabelaSimbolos.addFirst(novoTipo);
+	}
+	
+	private void removeTodasVariaveiEscopoAtual(int escopoAtual) {
+		
+		for(Tipo variavel : new LinkedList<Tipo>(tabelaSimbolos)) {
+			if(escopoAtual < variavel.getEscopo()) {
+				System.out.println("IF");
+				System.out.println("REmoveu=> "+variavel);
+				tabelaSimbolos.remove(variavel);
+			}
+		}
+	}
+	
+	private void exibeTudo() {
+		for(Tipo t :tabelaSimbolos) {
+			System.out.println(t.toString());
+		}
+	}
+	
+	private Tipo buscaEmTodosOsEscopos(String lexema) {
+		for(Tipo tipo : tabelaSimbolos) {
+			if(tipo.getLexema() == lexema) {
+				return tipo;
+			}
+		}
+		return null;
+	}
+	
 	
 	private void operadorRelacional() throws IOException {
 		if(nextToken.getToken() == Dicionario.OP_RELACIONAL_DIFERENTE_TOKEN) {

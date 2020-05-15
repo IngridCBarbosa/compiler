@@ -1,4 +1,7 @@
 int main(){
-   int x,y;
-   w = (5/x)+(((y)*8-5)* 7);	
+   int x,y,z,w;
+   {
+	float v;
+   }
+ 
 }
