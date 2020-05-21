@@ -72,7 +72,7 @@ public class Parser {
 			mensagemErroFechaChave(Scanner.getLinha(), Scanner.getColuna());
 			System.exit(0);
 		}
-		// adicionado aqui ao achar um fechaChaves dimiui um escopo 
+		
 		exibeTudo();		
 		escopo--;
 		removeTodasVariaveiEscopoAtual(escopo);
@@ -206,12 +206,19 @@ public class Parser {
 	
 	private void comandoSimples() throws IOException {
 		Tipo buscaVariavel;
+		Tipo operando1, operando2;
 		if(nextToken.getToken() == Dicionario.IDENTIFICADOR_TOKEN) {
+			
 			buscaVariavel = buscaEmTodosOsEscopos(nextToken.getTipo_Token());
 			if(buscaVariavel == null) {
-				// EXIBIR ERRO DE VARIAVEL NÂO DECLARADA
+				mensagemErroVariavelNãoDeclarada(Scanner.getLinha(), Scanner.getColuna());
+				System.exit(0);
 			}
-			atribuicao();
+			else {
+				operando1 = buscaVariavel;
+			}
+			
+			/*operando2*/atribuicao();
 		}
 		else if (nextToken.getToken() == Dicionario.ABRE_CHAVE_TOKEN) {
 			bloco();
@@ -219,11 +226,12 @@ public class Parser {
 	}
 	
 	private void atribuicao() throws IOException {
+		Tipo operando;
 		if(nextToken.getToken() == Dicionario.IDENTIFICADOR_TOKEN) {
 			nextToken = scanner.scannerToken();
 			if(nextToken.getToken() == Dicionario.OP_ARITMETICO_IGUAL_TOKEN) {
 				nextToken = scanner.scannerToken();
-				expressaoAritmetica();
+				/*operando = */expressaoAritmetica();
 				if(nextToken.getToken() == Dicionario.PONTO_E_VIRGULA_TOKEN) {
 					nextToken = scanner.scannerToken();
 				} else {
@@ -238,27 +246,32 @@ public class Parser {
 	}
 	
 	private void expressaoAritmetica() throws IOException {
+		Tipo operando1 = null, operando2 = null;
 		termo();
 		expressaoLinha();
+		
 	}
 	
 	private void termo() throws IOException {
+		Tipo operando1, operando2;
 		fator();
 		termoLinha();
+		
 		
 	}
 	
 	private void expressaoLinha() throws IOException {
-		
+		Tipo operando = null;
 		if(nextToken.getToken() == Dicionario.OP_ARITMETICO_ADICAO_TOKEN || nextToken.getToken() == Dicionario.OP_ARITMETICO_SUBTRACAO_TOKEN) {
 			nextToken = scanner.scannerToken();
 			expressaoAritmetica();
 			
 		} 	
-	
+		
 	}
 	
 	private void termoLinha() throws IOException {
+		Tipo operando1 = null,operando2;
 		do {
 			if(nextToken.getToken() == Dicionario.OP_ARITMETICO_MULTIPLICACAO_TOKEN) {
 				nextToken = scanner.scannerToken();
@@ -271,25 +284,44 @@ public class Parser {
 				termoLinha();
 			}
 		}while(nextToken.getToken() == Dicionario.OP_ARITMETICO_MULTIPLICACAO_TOKEN || nextToken.getToken() == Dicionario.OP_ARITMETICO_DIVISAO_TOKEN);
+		  
 	}
 	
 	private void fator() throws IOException {
+		Tipo buscaVariavel;
+		Tipo operando1 = null , operando2;
 		if(nextToken.getToken() == Dicionario.IDENTIFICADOR_TOKEN) {
+			buscaVariavel = buscaEmTodosOsEscopos(nextToken.getTipo_Token());
+			if(buscaVariavel == null) {
+				mensagemErroVariavelNãoDeclarada(Scanner.getLinha(), Scanner.getColuna());
+				System.exit(0);
+			}
+			else {
+				operando1 = buscaVariavel;
+			}
 			nextToken = scanner.scannerToken();
 		}
 		else if(nextToken.getToken() == Dicionario.TIPO_INT_TOKEN) {
+			
+			//operando1 = new Tipo (nextToken.getTipo_Token(), nextToken.getToken().getId(),0);
 			nextToken = scanner.scannerToken();
 		}
 		else if(nextToken.getToken() == Dicionario.TIPO_CHAR_TOKEN) {
+			
+			//operando1 = new Tipo (nextToken.getTipo_Token(), nextToken.getToken().getId(),0);
 			nextToken = scanner.scannerToken();
 		}
 		else if(nextToken.getToken() == Dicionario.TIPO_FLOAT_TOKEN) {
+			
+			//operando1 = new Tipo (nextToken.getTipo_Token(), nextToken.getToken().getId(),0);
 			nextToken = scanner.scannerToken();
 		}
 		else if(nextToken.getToken() == Dicionario.ABRE_PARENTESE_TOKEN) {
 			nextToken = scanner.scannerToken();
-			termoLinha();
+			
+			/*operador 1 ou 2*/termoLinha();
 			expressaoAritmetica();
+			
 			if(nextToken.getToken() == Dicionario.FECHA_PARENTESE_TOKEN) {
 				nextToken = scanner.scannerToken();
 			} else {
@@ -301,6 +333,7 @@ public class Parser {
 			mensagemErroFator(Scanner.getLinha(), Scanner.getColuna());
 			System.exit(0);
 		}
+		
 	}
 	
 	private void expressaoRelacional() throws IOException {
@@ -309,7 +342,7 @@ public class Parser {
 		expressaoAritmetica();
 		
 	}
-	// ADICIONA UM NÓ SEMPRE NO PRIMEIRO
+	
 	private void inserirNaTabelaSimbolos(Tipo novoTipo) {
 		tabelaSimbolos.addFirst(novoTipo);
 	}
@@ -332,12 +365,23 @@ public class Parser {
 	}
 	
 	private Tipo buscaEmTodosOsEscopos(String lexema) {
-		for(Tipo tipo : tabelaSimbolos) {
-			if(tipo.getLexema() == lexema) {
-				return tipo;
+		Tipo tipo = null;
+		for(int i = 0; i < tabelaSimbolos.size();i++) {
+			if(lexema.equals(tabelaSimbolos.get(i).getLexema())) {
+				tipo = tabelaSimbolos.get(i);
+				break;
 			}
 		}
+		return tipo;
+	}
+	
+	private Tipo buscaVariavelEscopoAtual(String lexema, int escopoAtual) {
 		return null;
+	}
+	
+	private void verificaOperadores(Tipo operando1, Tipo operando2, boolean divisao) {
+	
+		
 	}
 	
 	
@@ -404,5 +448,9 @@ public class Parser {
 	}
 	private void mensagemErroOperadoresRelacionario(int linha, int coluna) {
 		System.out.println("Erro na linha "+linha+", coluna "+coluna+". Sem operadores relacionais !=,==, >=, <=, >, <");
+	}
+	// ---------------------------------ERRO SEMANTICO--------------------------------
+	private void mensagemErroVariavelNãoDeclarada(int linha, int coluna) {
+		System.out.println("Erro na linha "+linha+", coluna "+coluna+". Variável não declarada");
 	}
 }
