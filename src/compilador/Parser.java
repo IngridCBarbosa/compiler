@@ -245,51 +245,61 @@ public class Parser {
 		}
 	}
 	
-	private void expressaoAritmetica() throws IOException {
+	private Tipo expressaoAritmetica() throws IOException {
 		Tipo operando1 = null, operando2 = null;
-		termo();
-		expressaoLinha();
-		
+		operando1 = termo();
+		operando2 = expressaoLinha();
+		return operando1;
 	}
 	
-	private void termo() throws IOException {
+	private Tipo termo() throws IOException {
 		Tipo operando1, operando2;
-		fator();
-		termoLinha();
+		operando1 = fator();
+		operando2 = termoLinha();
+		return operando1;
 		
 		
 	}
 	
-	private void expressaoLinha() throws IOException {
-		Tipo operando = null;
+	private Tipo expressaoLinha() throws IOException {
+		Tipo operando1 = null;
 		if(nextToken.getToken() == Dicionario.OP_ARITMETICO_ADICAO_TOKEN || nextToken.getToken() == Dicionario.OP_ARITMETICO_SUBTRACAO_TOKEN) {
 			nextToken = scanner.scannerToken();
-			expressaoAritmetica();
+			operando1 = expressaoAritmetica();
 			
-		} 	
+		}
+		
+		return operando1;
 		
 	}
 	
-	private void termoLinha() throws IOException {
+	private Tipo termoLinha() throws IOException {
 		Tipo operando1 = null,operando2;
+		boolean divisao = false;
 		do {
 			if(nextToken.getToken() == Dicionario.OP_ARITMETICO_MULTIPLICACAO_TOKEN) {
 				nextToken = scanner.scannerToken();
-				fator();
-				termoLinha();
+				operando1 = fator();
+				operando2 = termoLinha();
+				verificaOperadores(operando1, operando2, divisao);
 			}
 			else if(nextToken.getToken() == Dicionario.OP_ARITMETICO_DIVISAO_TOKEN) {
+				divisao = true;
 				nextToken = scanner.scannerToken();
-				fator();
-				termoLinha();
+				operando1 = fator();
+				operando2 = termoLinha();
+				verificaOperadores(operando1, operando2, divisao);
+				divisao = false;
 			}
 		}while(nextToken.getToken() == Dicionario.OP_ARITMETICO_MULTIPLICACAO_TOKEN || nextToken.getToken() == Dicionario.OP_ARITMETICO_DIVISAO_TOKEN);
+		
+		return operando1;
 		  
 	}
 	
-	private void fator() throws IOException {
+	private Tipo fator() throws IOException {
 		Tipo buscaVariavel;
-		Tipo operando1 = null , operando2;
+		Tipo operando1 = null;
 		if(nextToken.getToken() == Dicionario.IDENTIFICADOR_TOKEN) {
 			buscaVariavel = buscaEmTodosOsEscopos(nextToken.getTipo_Token());
 			if(buscaVariavel == null) {
@@ -303,24 +313,24 @@ public class Parser {
 		}
 		else if(nextToken.getToken() == Dicionario.TIPO_INT_TOKEN) {
 			
-			//operando1 = new Tipo (nextToken.getTipo_Token(), nextToken.getToken().getId(),escopo);
+			operando1 = new Tipo (nextToken.getTipo_Token(), nextToken.getToken().getId(),escopo);
 			nextToken = scanner.scannerToken();
 		}
 		else if(nextToken.getToken() == Dicionario.TIPO_CHAR_TOKEN) {
 			
-			//operando1 = new Tipo (nextToken.getTipo_Token(), nextToken.getToken().getId(),escopo);
+			operando1 = new Tipo (nextToken.getTipo_Token(), nextToken.getToken().getId(),escopo);
 			nextToken = scanner.scannerToken();
 		}
 		else if(nextToken.getToken() == Dicionario.TIPO_FLOAT_TOKEN) {
 			
-			//operando1 = new Tipo (nextToken.getTipo_Token(), nextToken.getToken().getId(),escopo);
+			operando1 = new Tipo (nextToken.getTipo_Token(), nextToken.getToken().getId(),escopo);
 			nextToken = scanner.scannerToken();
 		}
 		else if(nextToken.getToken() == Dicionario.ABRE_PARENTESE_TOKEN) {
 			nextToken = scanner.scannerToken();
 			
-			/*operador 1 ou 2*/termoLinha();
-			expressaoAritmetica();
+			/*operador 1 ou 2???*/ //termoLinha();
+			operando1 = expressaoAritmetica();
 			
 			if(nextToken.getToken() == Dicionario.FECHA_PARENTESE_TOKEN) {
 				nextToken = scanner.scannerToken();
@@ -334,9 +344,12 @@ public class Parser {
 			System.exit(0);
 		}
 		
+		return operando1;
+		
 	}
 	
 	private void expressaoRelacional() throws IOException {
+		Tipo operando1,operando2;
 		expressaoAritmetica();
 		operadorRelacional();
 		expressaoAritmetica();
