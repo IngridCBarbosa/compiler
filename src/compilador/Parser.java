@@ -303,17 +303,17 @@ public class Parser {
 		}
 		else if(nextToken.getToken() == Dicionario.TIPO_INT_TOKEN) {
 			
-			//operando1 = new Tipo (nextToken.getTipo_Token(), nextToken.getToken().getId(),0);
+			//operando1 = new Tipo (nextToken.getTipo_Token(), nextToken.getToken().getId(),escopo);
 			nextToken = scanner.scannerToken();
 		}
 		else if(nextToken.getToken() == Dicionario.TIPO_CHAR_TOKEN) {
 			
-			//operando1 = new Tipo (nextToken.getTipo_Token(), nextToken.getToken().getId(),0);
+			//operando1 = new Tipo (nextToken.getTipo_Token(), nextToken.getToken().getId(),escopo);
 			nextToken = scanner.scannerToken();
 		}
 		else if(nextToken.getToken() == Dicionario.TIPO_FLOAT_TOKEN) {
 			
-			//operando1 = new Tipo (nextToken.getTipo_Token(), nextToken.getToken().getId(),0);
+			//operando1 = new Tipo (nextToken.getTipo_Token(), nextToken.getToken().getId(),escopo);
 			nextToken = scanner.scannerToken();
 		}
 		else if(nextToken.getToken() == Dicionario.ABRE_PARENTESE_TOKEN) {
@@ -375,13 +375,54 @@ public class Parser {
 		return tipo;
 	}
 	
-	private Tipo buscaVariavelEscopoAtual(String lexema, int escopoAtual) {
-		return null;
+	private Tipo buscaVariavelEscopoAtual(String lexema) {
+		Tipo tipo = null;
+		for (Tipo t : tabelaSimbolos) {
+			if(lexema.equals(t.getLexema()) && escopo == t.getEscopo()) {
+				tipo = t;
+				break;
+			}
+		}
+		return tipo;
 	}
 	
+	// VERIFICA O LADO DIREITO DA OPERAÇÃO
 	private void verificaOperadores(Tipo operando1, Tipo operando2, boolean divisao) {
-	
+		if(operando1.getId_Tipo() == Dicionario.TIPO_INT_TOKEN.getId() && operando2.getId_Tipo() == Dicionario.TIPO_FLOAT_TOKEN.getId()) {
+			operando1.setId_Tipo(Dicionario.TIPO_FLOAT_TOKEN.getId());
+		}
+		if(operando1.getId_Tipo() == Dicionario.TIPO_FLOAT_TOKEN.getId() && operando2.getId_Tipo() == Dicionario.TIPO_FLOAT_TOKEN.getId()) {
+			operando2.setId_Tipo(Dicionario.TIPO_FLOAT_TOKEN.getId());
+		}
+		if(divisao == true && operando1.getId_Tipo() == Dicionario.TIPO_INT_TOKEN.getId() && operando2.getId_Tipo()== Dicionario.TIPO_INT_TOKEN.getId()) {
+			operando1.setId_Tipo(Dicionario.TIPO_FLOAT_TOKEN.getId());
+		}
+		if(operando1.getId_Tipo() == Dicionario.TIPO_CHAR_TOKEN.getId() && operando2.getId_Tipo() != Dicionario.TIPO_CHAR_TOKEN.getId()) {
+			// exibe erro
+		}
+		if(operando1.getId_Tipo() == Dicionario.TIPO_INT_TOKEN.getId() && operando2.getId_Tipo() == Dicionario.TIPO_CHAR_TOKEN.getId()) {
+			// exibe erro
+		}
+		if(operando1.getId_Tipo() == Dicionario.TIPO_FLOAT_TOKEN.getId() && operando2.getId_Tipo() == Dicionario.TIPO_CHAR_TOKEN.getId()) {
+			// exibir erro
+		}
 		
+	}
+	
+	// VERIFICA O LADO DIREITO COM O ESQUERDO
+	private void verificaEmAtribuicao(Tipo operando1, Tipo operando2) {
+		if(operando1.getId_Tipo() == Dicionario.TIPO_FLOAT_TOKEN.getId() && operando2.getId_Tipo() == Dicionario.TIPO_INT_TOKEN.getId()) {
+			operando2.setId_Tipo(Dicionario.TIPO_FLOAT_TOKEN.getId());
+		}
+		if(operando1.getId_Tipo() == Dicionario.TIPO_INT_TOKEN.getId() && operando2.getId_Tipo() != Dicionario.TIPO_INT_TOKEN.getId()) {
+			// EXIBIR  MENSAGEM DE ERRO
+		}
+		if(operando1.getId_Tipo() == Dicionario.TIPO_CHAR_TOKEN.getId() && operando2.getId_Tipo() != Dicionario.TIPO_CHAR_TOKEN.getId()) {
+			// EXIBIR MENSAGEM DE ERRO
+		}
+		if(operando1.getId_Tipo() == Dicionario.TIPO_FLOAT_TOKEN.getId() && operando2.getId_Tipo() == Dicionario.TIPO_CHAR_TOKEN.getId()) {
+			// EXIBIR MENSAGEM DE ERRO
+		}
 	}
 	
 	
