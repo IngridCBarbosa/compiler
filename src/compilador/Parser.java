@@ -206,7 +206,7 @@ public class Parser {
 	
 	private void comandoSimples() throws IOException {
 		Tipo buscaVariavel;
-		Tipo operando1, operando2;
+		Tipo operando1 = null, operando2;
 		if(nextToken.getToken() == Dicionario.IDENTIFICADOR_TOKEN) {
 			
 			buscaVariavel = buscaEmTodosOsEscopos(nextToken.getTipo_Token());
@@ -218,20 +218,21 @@ public class Parser {
 				operando1 = buscaVariavel;
 			}
 			
-			/*operando2*/atribuicao();
+			operando2 = atribuicao();
+			verificaEmAtribuicao(operando1, operando2);
 		}
 		else if (nextToken.getToken() == Dicionario.ABRE_CHAVE_TOKEN) {
 			bloco();
 		}
 	}
 	
-	private void atribuicao() throws IOException {
-		Tipo operando;
+	private Tipo atribuicao() throws IOException {
+		Tipo operando = null;
 		if(nextToken.getToken() == Dicionario.IDENTIFICADOR_TOKEN) {
 			nextToken = scanner.scannerToken();
 			if(nextToken.getToken() == Dicionario.OP_ARITMETICO_IGUAL_TOKEN) {
 				nextToken = scanner.scannerToken();
-				/*operando = */expressaoAritmetica();
+				operando = expressaoAritmetica();
 				if(nextToken.getToken() == Dicionario.PONTO_E_VIRGULA_TOKEN) {
 					nextToken = scanner.scannerToken();
 				} else {
@@ -243,12 +244,20 @@ public class Parser {
 				
 			}
 		}
+		return operando;
 	}
 	
 	private Tipo expressaoAritmetica() throws IOException {
 		Tipo operando1 = null, operando2 = null;
 		operando1 = termo();
 		operando2 = expressaoLinha();
+		
+		if(operando2.getId_Tipo() == Dicionario.TIPO_INT_TOKEN.getId() 
+				|| operando2.getId_Tipo() == Dicionario.TIPO_FLOAT_TOKEN.getId() 
+				|| operando2.getId_Tipo() == Dicionario.TIPO_CHAR_TOKEN.getId()) {
+			
+			verificaOperadores(operando1, operando2, false);
+		}
 		return operando1;
 	}
 	
@@ -262,11 +271,10 @@ public class Parser {
 	}
 	
 	private Tipo expressaoLinha() throws IOException {
-		Tipo operando1 = null;
+		Tipo operando1 = null, operando2;
 		if(nextToken.getToken() == Dicionario.OP_ARITMETICO_ADICAO_TOKEN || nextToken.getToken() == Dicionario.OP_ARITMETICO_SUBTRACAO_TOKEN) {
 			nextToken = scanner.scannerToken();
 			operando1 = expressaoAritmetica();
-			
 		}
 		
 		return operando1;
@@ -357,7 +365,12 @@ public class Parser {
 	}
 	
 	private void inserirNaTabelaSimbolos(Tipo novoTipo) {
-		tabelaSimbolos.addFirst(novoTipo);
+		if(buscaVariavelEscopoAtual(novoTipo.getLexema()) == null) {
+			
+			tabelaSimbolos.addFirst(novoTipo);
+		}else {
+			// EXIBIR ERRO DE VARIÁVEL DECLARADA NO ESCOPO
+		}
 	}
 	
 	private void removeTodasVariaveiEscopoAtual(int escopoAtual) {
