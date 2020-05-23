@@ -207,7 +207,7 @@ public class Parser {
 	
 	private void comandoSimples() throws IOException {
 		Tipo operando1a, operando2a;
-		//Tipo operando1 = null, operando2 = null;
+		
 		if(nextToken.getToken() == Dicionario.IDENTIFICADOR_TOKEN) {
 			
 			operando1a = buscaEmTodosOsEscopos(nextToken.getTipo_Token());
