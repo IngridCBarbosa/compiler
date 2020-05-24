@@ -352,11 +352,11 @@ public class Parser {
 	}
 	
 	private void expressaoRelacional() throws IOException {
-		
-		operando1 = expressaoAritmetica();
+		Tipo operando1a,operando2a;
+		operando1a = expressaoAritmetica();
 		operadorRelacional();
-		operando2 = expressaoAritmetica();
-		verificaOperadores(operando1, operando2, false);
+		operando2a = expressaoAritmetica();
+		verificaOperadores(operando1a, operando2a, false);
 		
 	}
 	
