@@ -45,7 +45,7 @@ public class Parser {
 		
 		bloco();
 		
-		System.out.println("PASSOU");
+		//System.out.println("PASSOU");
 	}
 	
 	private void bloco() throws IOException {
@@ -73,7 +73,7 @@ public class Parser {
 			System.exit(0);
 		}
 		
-		exibeTudo();		
+		//exibeTudo();		
 		escopo--;
 		removeTodasVariaveiEscopoAtual(escopo);
 		nextToken = scanner.scannerToken();
@@ -216,13 +216,13 @@ public class Parser {
 				System.exit(0);
 			}
 			else {
-				System.out.println("lado direito: "+operando1a.getLexema());
+				//System.out.println("lado direito: "+operando1a.getLexema());
 				
 			}
 			
 			operando2a = atribuicao();
-			System.out.println("lado esquerdo: "+operando2.getLexema());
-			verificaOperadores(operando1a, operando2a, false);
+			//System.out.println("lado esquerdo: "+operando2.getLexema());
+			verificaEmAtribuicao(operando1a, operando2a);
 		}
 		else if (nextToken.getToken() == Dicionario.ABRE_CHAVE_TOKEN) {
 			bloco();
@@ -309,7 +309,7 @@ public class Parser {
 				System.exit(0);
 			}
 			else {
-				System.out.println("variavel buscada "+operando1.getLexema());
+				//System.out.println("variavel buscada "+operando1.getLexema());
 				 
 			}
 			nextToken = scanner.scannerToken();
@@ -374,8 +374,8 @@ public class Parser {
 		
 		for(Tipo variavel : new LinkedList<Tipo>(tabelaSimbolos)) {
 			if(escopoAtual < variavel.getEscopo()) {
-				System.out.println("IF");
-				System.out.println("REmoveu=> "+variavel);
+				//System.out.println("IF");
+				//System.out.println("REmoveu=> "+variavel);
 				tabelaSimbolos.remove(variavel);
 			}
 		}
@@ -412,7 +412,7 @@ public class Parser {
 	// VERIFICA O LADO DIREITO DA OPERAÇÃO
 	private void verificaOperadores(Tipo operando1, Tipo operando2, boolean divisao) {
 		
-		System.out.println("operando1: "+operando1.getId_Tipo()+" operando1: "+operando1.getLexema()+" operando2: "+operando2.getId_Tipo()+" operando2: "+operando2.getLexema());
+		//System.out.println("operando1: "+operando1.getId_Tipo()+" operando1: "+operando1.getLexema()+" operando2: "+operando2.getId_Tipo()+" operando2: "+operando2.getLexema());
 		if(operando1.getId_Tipo() == Dicionario.TIPO_INT_TOKEN.getId() && operando2.getId_Tipo() == Dicionario.TIPO_FLOAT_TOKEN.getId()) {
 			operando1.setId_Tipo(Dicionario.TIPO_FLOAT_TOKEN.getId());
 		}
