@@ -12,6 +12,7 @@ public class Parser {
 	private int escopo = 0;
 	private static LinkedList<Tipo> tabelaSimbolos; 
 	private Tipo operando1 = null, operando2 = null;
+	private int temporarioIndice = 0, labelIndice = 0;
 	
 	public Parser(String nomeArquivo) throws IOException {
 		scanner = new Scanner(nomeArquivo);
@@ -122,7 +123,8 @@ public class Parser {
 	}
 	
 	private void comando() throws IOException {
-		
+		Tipo operando;
+		int label = labelIndice;
 		
 			if(nextToken.getToken() == Dicionario.IDENTIFICADOR_TOKEN || nextToken.getToken() == Dicionario.ABRE_CHAVE_TOKEN) {
 				comandoSimples();
@@ -134,13 +136,29 @@ public class Parser {
 				nextToken = scanner.scannerToken();
 				if(nextToken.getToken() == Dicionario.ABRE_PARENTESE_TOKEN) {
 					nextToken = scanner.scannerToken();
-					expressaoRelacional();
+					operando = expressaoRelacional();
 					if(nextToken.getToken() == Dicionario.FECHA_PARENTESE_TOKEN) {
 						nextToken = scanner.scannerToken();
+						
+						System.out.print("if "+operando.getLexema());
+						if(operando.getTemporarioId() >= 0) {
+							System.out.print(operando.getTemporarioId());
+						}
+						System.out.println(" == 0 goto L"+label);
+						labelIndice++;
+						
 						 comando();
+						 
 						if(nextToken.getToken() == Dicionario.PR_ELSE_TOKEN) {
 							nextToken = scanner.scannerToken();
+							System.out.println("goto L"+labelIndice);
+							System.out.println("L"+label+":");
+							label = labelIndice;
 							comando();
+							System.out.println("L"+label+":");
+						}else {
+							System.out.println();
+							System.out.println("L"+label+":");
 						}
 					}else {
 						mensagemErroFechaParentese(Scanner.getLinha(), Scanner.getColuna());
@@ -157,14 +175,31 @@ public class Parser {
 	
 	
 	private void iteracao() throws IOException {
+		Tipo operando;
+		int label =  labelIndice;
+		
+		System.out.println("L"+label+":");
+		
 		if(nextToken.getToken() == Dicionario.PR_WHILE_TOKEN ) {
+			labelIndice +=2;
 			nextToken = scanner.scannerToken();
 			if(nextToken.getToken() == Dicionario.ABRE_PARENTESE_TOKEN) {
 				nextToken = scanner.scannerToken();
-				expressaoRelacional();
+				operando = expressaoRelacional();
 				if(nextToken.getToken() == Dicionario.FECHA_PARENTESE_TOKEN) {
 					nextToken = scanner.scannerToken();
+					
+					System.out.print("if "+operando.getLexema());
+					if(operando.getTemporarioId() >= 0) {
+						System.out.print(operando.getTemporarioId());
+					}
+					System.out.println("== 0 goto L"+(label+1));
+			
 					comando();
+					System.out.println();
+					System.out.println("goto L"+label);
+					System.out.println("L"+(label + 1)+":");
+					
 				} else {
 					mensagemErroFechaParentese(Scanner.getLinha(), Scanner.getColuna());
 					System.exit(0);
@@ -174,17 +209,26 @@ public class Parser {
 				System.exit(0);
 			}
 		} else if(nextToken.getToken() == Dicionario.PR_DO_TOKEN) {
+			
+			label = labelIndice++;
 			nextToken=scanner.scannerToken();
 			comando();
 			if(nextToken.getToken() == Dicionario.PR_WHILE_TOKEN) {
 				nextToken = scanner.scannerToken();
 				if(nextToken.getToken() == Dicionario.ABRE_PARENTESE_TOKEN) {
 					nextToken = scanner.scannerToken();
-					expressaoRelacional();
+					 operando = expressaoRelacional();
 					if(nextToken.getToken() == Dicionario.FECHA_PARENTESE_TOKEN) {
 						nextToken = scanner.scannerToken();
 						if(nextToken.getToken() == Dicionario.PONTO_E_VIRGULA_TOKEN) {
 							nextToken = scanner.scannerToken();
+							
+							System.out.print("if "+operando.getLexema());
+							if(operando.getTemporarioId() >= 0) {
+								System.out.print(operando.getTemporarioId());
+							}
+							System.out.println(" != 0 goto L"+label);
+							
 						} else {
 							mensagemErroPontoEVirgula(Scanner.getLinha(), Scanner.getLinha());
 							System.exit(0);
@@ -212,7 +256,7 @@ public class Parser {
 			
 			operando1a = buscaEmTodosOsEscopos(nextToken.getTipo_Token());
 			if(operando1a == null) {
-				mensagemErroVariavelNãoDeclarada(Scanner.getLinha(), Scanner.getColuna());
+				mensagemErroVariavelNaoDeclarada(Scanner.getLinha(), Scanner.getColuna());
 				System.exit(0);
 			}
 			else {
@@ -252,8 +296,13 @@ public class Parser {
 	
 	private Tipo expressaoAritmetica() throws IOException {
 		Tipo operando1a;
+		
+		
 		operando1a = termo();
+	
+		
 		operando2 = expressaoLinha(operando1a);
+		
 		return operando1a;
 	}
 	
@@ -261,6 +310,9 @@ public class Parser {
 		
 		operando1 = fator();
 		operando2 = termoLinha(operando1);
+		
+		
+		
 		return operando1;
 		
 		
@@ -268,11 +320,21 @@ public class Parser {
 	
 	private Tipo expressaoLinha(Tipo operando1) throws IOException {
 		Tipo operando1a = operando1;
+		String sinal = null;
+		
 		if(nextToken.getToken() == Dicionario.OP_ARITMETICO_ADICAO_TOKEN || nextToken.getToken() == Dicionario.OP_ARITMETICO_SUBTRACAO_TOKEN) {
+			
+			sinal = nextToken.getTipo_Token();
+			
 			nextToken = scanner.scannerToken();
+			
 			operando2 = expressaoAritmetica();
+			
+			verificaOperadores(operando1a, operando2, false);
+			operando1a = codigoIntermediario(operando1a, operando2, sinal);
+			
 		}
-		verificaOperadores(operando1a, operando2, false);
+		
 		
 		return operando1a; 
 		
@@ -280,18 +342,32 @@ public class Parser {
 	
 	private Tipo termoLinha(Tipo operador1) throws IOException {
 		Tipo operando1 = operador1, operando2;
+		String operacao;
+		
 		do {
 			if(nextToken.getToken() == Dicionario.OP_ARITMETICO_MULTIPLICACAO_TOKEN) {
+				operacao = nextToken.getTipo_Token();
+				
+				
 				nextToken = scanner.scannerToken();
+				
 				operando1 = fator();
 				operando2 = termoLinha(operando1);
+				
 				verificaOperadores(operador1, operando2, false);
+				operando1 = codigoIntermediario(operador1, operando2, operacao);
 			}
 			else if(nextToken.getToken() == Dicionario.OP_ARITMETICO_DIVISAO_TOKEN) {
+				operacao = nextToken.getTipo_Token();
+				
 				nextToken = scanner.scannerToken();
+				
 				operando1 = fator();
 				operando2 = termoLinha(operando1);
+				
 				verificaOperadores(operador1, operando2, true);
+				operando1 = codigoIntermediario(operando1, operando2, operacao);
+				
 			}
 		}while(nextToken.getToken() == Dicionario.OP_ARITMETICO_MULTIPLICACAO_TOKEN || nextToken.getToken() == Dicionario.OP_ARITMETICO_DIVISAO_TOKEN);
 		
@@ -305,7 +381,7 @@ public class Parser {
 		if(nextToken.getToken() == Dicionario.IDENTIFICADOR_TOKEN) {
 			operando1 = buscaEmTodosOsEscopos(nextToken.getTipo_Token());
 			if(operando1 == null) {
-				mensagemErroVariavelNãoDeclarada(Scanner.getLinha(), Scanner.getColuna());
+				mensagemErroVariavelNaoDeclarada(Scanner.getLinha(), Scanner.getColuna());
 				System.exit(0);
 			}
 			else {
@@ -351,13 +427,20 @@ public class Parser {
 		
 	}
 	
-	private void expressaoRelacional() throws IOException {
+	private Tipo expressaoRelacional() throws IOException {
 		Tipo operando1a,operando2a;
+		String operacao;
 		operando1a = expressaoAritmetica();
-		operadorRelacional();
-		operando2a = expressaoAritmetica();
-		verificaOperadores(operando1a, operando2a, false);
+		operacao = nextToken.getTipo_Token();
 		
+		operadorRelacional();
+		
+		operando2a = expressaoAritmetica();
+		
+		verificaOperadores(operando1a, operando2a, false);
+		operando1a = codigoIntermediario(operando1a, operando2a, operacao);
+		
+		return operando1a;
 	}
 	
 	private void inserirNaTabelaSimbolos(Tipo novoTipo) {
@@ -389,9 +472,10 @@ public class Parser {
 	
 	private Tipo buscaEmTodosOsEscopos(String lexema) {
 		Tipo tipo = null;
+		
 		for(int i = 0; i < tabelaSimbolos.size();i++) {
 			if(lexema.equals(tabelaSimbolos.get(i).getLexema())) {
-				tipo = tabelaSimbolos.get(i);
+				tipo = new Tipo(tabelaSimbolos.get(i).getLexema(), tabelaSimbolos.get(i).getId_Tipo(), tabelaSimbolos.get(i).getEscopo());
 				break;
 			}
 		}
@@ -402,31 +486,49 @@ public class Parser {
 		Tipo tipo = null;
 		for (Tipo t : tabelaSimbolos) {
 			if(lexema.equals(t.getLexema()) && escopo == t.getEscopo()) {
-				tipo = t;
+				tipo = new Tipo(t.getLexema(), t.getId_Tipo(), t.getEscopo());
 				break;
 			}
 		}
 		return tipo;
 	}
 	
-	// VERIFICA O LADO DIREITO DA OPERAÇÃO
+	// VERIFICA O LADO DIREITO DA OPERAï¿½ï¿½O
 	private void verificaOperadores(Tipo operando1, Tipo operando2, boolean divisao) {
 		
 		//System.out.println("operando1: "+operando1.getId_Tipo()+" operando1: "+operando1.getLexema()+" operando2: "+operando2.getId_Tipo()+" operando2: "+operando2.getLexema());
 		if(operando1.getId_Tipo() == Dicionario.TIPO_INT_TOKEN.getId() && operando2.getId_Tipo() == Dicionario.TIPO_FLOAT_TOKEN.getId()) {
 			operando1.setId_Tipo(Dicionario.TIPO_FLOAT_TOKEN.getId());
 		}
-		if(operando1.getId_Tipo() == Dicionario.TIPO_FLOAT_TOKEN.getId() && operando2.getId_Tipo() == Dicionario.TIPO_FLOAT_TOKEN.getId()) {
-			operando1.setId_Tipo(Dicionario.TIPO_FLOAT_TOKEN.getId());
+		if(operando1.getId_Tipo() == Dicionario.TIPO_FLOAT_TOKEN.getId() && operando2.getId_Tipo() == Dicionario.TIPO_INT_TOKEN.getId()) {
+			operando2.setId_Tipo(Dicionario.TIPO_FLOAT_TOKEN.getId());
+			
+			System.out.print("T"+temporarioIndice+" = (float) "+operando2.getLexema());
+			if(operando2.getTemporarioId() >= 0) {
+				System.out.print(operando2.getTemporarioId());
+			}
+			System.out.println();
+			operando2.setLexema("T");
+			operando2.setTemporarioId(temporarioIndice);
+			temporarioIndice++;
+			
 		}
 		if(divisao == true && operando1.getId_Tipo() == Dicionario.TIPO_INT_TOKEN.getId() && operando2.getId_Tipo()== Dicionario.TIPO_INT_TOKEN.getId()) {
 			 operando1.setId_Tipo(Dicionario.TIPO_FLOAT_TOKEN.getId());
+			 
+			 System.out.print("T"+temporarioIndice+" = (float) "+operando1.getLexema());
+			 if(operando1.getTemporarioId() >= 0) {
+				 System.out.println(operando1.getTemporarioId());
+			 }
+			 operando1.setLexema("T");
+			 operando1.setTemporarioId(temporarioIndice);
+			 temporarioIndice++;
 		}
 		if(operando1.getId_Tipo() == Dicionario.TIPO_CHAR_TOKEN.getId() && operando2.getId_Tipo() != Dicionario.TIPO_CHAR_TOKEN.getId()) {
 			mensagemErroVariavelIncompativel(Scanner.getLinha(), Scanner.getColuna());
 			System.exit(0);
 		}
-		if(operando1.getId_Tipo() == Dicionario.TIPO_INT_TOKEN.getId() && operando2.getId_Tipo() != Dicionario.TIPO_INT_TOKEN.getId()) {
+		if(operando1.getId_Tipo() == Dicionario.TIPO_INT_TOKEN.getId() && operando2.getId_Tipo() == Dicionario.TIPO_CHAR_TOKEN.getId()) {
 			mensagemErroVariavelIncompativel(Scanner.getLinha(), Scanner.getColuna());
 			System.exit(0);
 		}
@@ -441,7 +543,22 @@ public class Parser {
 	private void verificaEmAtribuicao(Tipo operando1, Tipo operando2) {
 		if(operando1.getId_Tipo() == Dicionario.TIPO_FLOAT_TOKEN.getId() && operando2.getId_Tipo() == Dicionario.TIPO_INT_TOKEN.getId()) {
 			operando2.setId_Tipo(Dicionario.TIPO_FLOAT_TOKEN.getId());
+			
+			System.out.print("T"+temporarioIndice+" = (float) "+operando2.getLexema());
+			if(operando2.getTemporarioId() >= 0) {
+				System.out.println(operando2.getTemporarioId());
+			}
+			System.out.println();
+			operando2.setLexema("T");
+			operando2.setTemporarioId(temporarioIndice);
+			temporarioIndice++;
+			
 		}
+		System.out.print(operando1.getLexema()+" = "+operando2.getLexema());
+		if(operando2.getTemporarioId() >= 0) {
+			System.out.println(operando2.getTemporarioId());
+		}
+		
 		if(operando1.getId_Tipo() == Dicionario.TIPO_INT_TOKEN.getId() && operando2.getId_Tipo() != Dicionario.TIPO_INT_TOKEN.getId()) {
 			mensagemErroVariavelIncompativel(Scanner.getLinha(), Scanner.getColuna());
 			System.exit(0);
@@ -497,6 +614,26 @@ public class Parser {
 		return tipo;
 	}
 	
+	public Tipo codigoIntermediario(Tipo operando1, Tipo operando2, String operacao) {
+		
+		System.out.print("T"+temporarioIndice+" = "+operando1.getLexema());
+		if(operando1.getTemporarioId() >= 0) {
+			System.out.print(operando1.getTemporarioId());
+		}
+		System.out.print(operacao);
+		System.out.print(operando2.getLexema());
+		if(operando2.getTemporarioId() >= 0) {
+			System.out.print(operando2.getTemporarioId());
+		}
+		System.out.println();
+		operando1.setLexema("T");
+		operando1.setTemporarioId(temporarioIndice);
+		temporarioIndice++;
+		
+		return operando1;
+	}
+	
+	
 	
 	
 	/// ---------------------------ERROS----------------------------////
@@ -539,13 +676,13 @@ public class Parser {
 	
 	
 	// ---------------------------------ERRO SEMANTICO--------------------------------
-	private void mensagemErroVariavelNãoDeclarada(int linha, int coluna) {
-		System.out.println("Erro na linha "+linha+", coluna "+coluna+". Variável não declarada");
+	private void mensagemErroVariavelNaoDeclarada(int linha, int coluna) {
+		System.out.println("Erro na linha "+linha+", coluna "+coluna+". Variï¿½vel nï¿½o declarada");
 	}
 	private void mensagemErroVariavelDeclaradaEscopoArual(int linha, int coluna) {
-		System.out.println("Erro na linha "+linha+", coluna "+coluna+". Variável já declarada no escopo");
+		System.out.println("Erro na linha "+linha+", coluna "+coluna+". Variï¿½vel jï¿½ declarada no escopo");
 	}
 	private void mensagemErroVariavelIncompativel(int linha, int coluna) {
-		System.out.println("Erro na linha "+linha+", coluna "+coluna+". Tipo de variáveis incompatível.");
+		System.out.println("Erro na linha "+linha+", coluna "+coluna+". Tipo de variï¿½veis incompatï¿½vel.");
 	}
 }
