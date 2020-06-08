@@ -8,7 +8,7 @@ int main () {
 
  do {
   
-  x = 3;
+  x = 3 + 7;
  
  }while(x < x*2);
  

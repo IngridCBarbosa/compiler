@@ -157,7 +157,7 @@ public class Parser {
 							comando();
 							System.out.println("L"+label+":");
 						}else {
-							System.out.println();
+							//anaInSystem.out.println();
 							System.out.println("L"+label+":");
 						}
 					}else {
@@ -193,10 +193,10 @@ public class Parser {
 					if(operando.getTemporarioId() >= 0) {
 						System.out.print(operando.getTemporarioId());
 					}
-					System.out.println("== 0 goto L"+(label+1));
+					System.out.println(" == 0 goto L"+(label+1));
 			
 					comando();
-					System.out.println();
+					//System.out.println();
 					System.out.println("goto L"+label);
 					System.out.println("L"+(label + 1)+":");
 					
@@ -366,7 +366,7 @@ public class Parser {
 				operando2 = termoLinha(operando1);
 				
 				verificaOperadores(operador1, operando2, true);
-				operando1 = codigoIntermediario(operando1, operando2, operacao);
+				operando1 = codigoIntermediario(operador1, operando2, operacao);
 				
 			}
 		}while(nextToken.getToken() == Dicionario.OP_ARITMETICO_MULTIPLICACAO_TOKEN || nextToken.getToken() == Dicionario.OP_ARITMETICO_DIVISAO_TOKEN);
@@ -518,8 +518,9 @@ public class Parser {
 			 
 			 System.out.print("T"+temporarioIndice+" = (float) "+operando1.getLexema());
 			 if(operando1.getTemporarioId() >= 0) {
-				 System.out.println(operando1.getTemporarioId());
+				 System.out.print(operando1.getTemporarioId());
 			 }
+			 System.out.println();
 			 operando1.setLexema("T");
 			 operando1.setTemporarioId(temporarioIndice);
 			 temporarioIndice++;
@@ -546,7 +547,7 @@ public class Parser {
 			
 			System.out.print("T"+temporarioIndice+" = (float) "+operando2.getLexema());
 			if(operando2.getTemporarioId() >= 0) {
-				System.out.println(operando2.getTemporarioId());
+				System.out.print(operando2.getTemporarioId());
 			}
 			System.out.println();
 			operando2.setLexema("T");
@@ -556,9 +557,9 @@ public class Parser {
 		}
 		System.out.print(operando1.getLexema()+" = "+operando2.getLexema());
 		if(operando2.getTemporarioId() >= 0) {
-			System.out.println(operando2.getTemporarioId());
+			System.out.print(operando2.getTemporarioId());
 		}
-		
+		System.out.println();
 		if(operando1.getId_Tipo() == Dicionario.TIPO_INT_TOKEN.getId() && operando2.getId_Tipo() != Dicionario.TIPO_INT_TOKEN.getId()) {
 			mensagemErroVariavelIncompativel(Scanner.getLinha(), Scanner.getColuna());
 			System.exit(0);
@@ -615,7 +616,7 @@ public class Parser {
 	}
 	
 	public Tipo codigoIntermediario(Tipo operando1, Tipo operando2, String operacao) {
-		
+		//System.out.println();
 		System.out.print("T"+temporarioIndice+" = "+operando1.getLexema());
 		if(operando1.getTemporarioId() >= 0) {
 			System.out.print(operando1.getTemporarioId());
