@@ -21,4 +21,4 @@
  **Note**: Do not forget, that you must have a txt file that is the program, in the programming language for the project.
  
  ## Author
-  .**Ingrid Barbosa**
+ > -**Ingrid Barbosa**
