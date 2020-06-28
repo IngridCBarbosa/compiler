@@ -7,7 +7,7 @@
 ## Prerequisites
   1. You need install **Java** to do this project.
   2. You need to know how the compiler is divided.
-  3. You need to understand how each compiler part works:**Scanner, Parser, Semantic Analyzer and ICG**.
+  3. You need to understand how each compiler part works: **Scanner, Parser, Semantic Analyzer and ICG**.
   
   [Compilers:Principles, Techniques, and Tools](https://www.amazon.com/Compilers-Principles-Techniques-Tools-2nd/dp/0321486811)
   
@@ -21,4 +21,4 @@
  **Note**: Do not forget, that you must have a txt file that is the program, in the programming language for the project.
  
  ## Author
- > -**Ingrid Barbosa**
+ > - **Ingrid Barbosa**
