@@ -1,5 +1,5 @@
 # Compiler
->This project is a simple compile for Compile subjects in university.
+>This project is a simple compiler for the subject of Compilers at the university.
   This project has implemented the Scanner, Parser, Semantic Analyzer and the Intermediate Code Generator. 
   Part of the cover was done alone, and as the project progressed, other parts were added. 
   The language for which this compiler was written is simple and was created by the professor.
@@ -12,10 +12,11 @@
   [Compilers:Principles, Techniques, and Tools](https://www.amazon.com/Compilers-Principles-Techniques-Tools-2nd/dp/0321486811)
   
  ## How to run
-  #### To run the project:
-     1.In the src folder, go to each .java and delete all packages;
-     2.after deleting the packages, open the terminal in the src folder;
-     3.run the command javac Main.java. Then run the command java Main file.txt (programming language file).
+    1.In the src folder, go to each .java and delete all packages;
+    2.after deleting the packages, open the terminal in the src folder;
+    3.run the commands.
+     > javac Main.java
+       java Main file.txt (programing language file)
  If you have generated a _3-address language program_, then the compiler is working.
  
  **Note**: Do not forget, that you must have a txt file that is the program, in the programming language for the project.
