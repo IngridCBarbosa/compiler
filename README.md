@@ -12,7 +12,7 @@
   [Compilers:Principles, Techniques, and Tools](https://www.amazon.com/Compilers-Principles-Techniques-Tools-2nd/dp/0321486811)
   
  ## How to run
-   ## To run in the terminal:
+   ### To run in the terminal:
    1. In the src folder, go to each .java and delete all packages;
    2. after deleting the packages, open the terminal in the src folder;
    3. run the commands.
@@ -20,7 +20,7 @@
        
        > java Main file.txt (programing language file)
         
-   ## To run in te IDE:
+   ### To run in te IDE:
    1. Put the name of the txt file in place of args[0].
       
       > Parser parser = new Parser(args[0]);
